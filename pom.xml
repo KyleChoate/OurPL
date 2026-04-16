@@ -76,7 +76,7 @@
             </manifest>
           </archive>
 
-          <!-- I want to output an executable jar for practice -->
+          <!-- I want to output an executable jar because why not? -->
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
