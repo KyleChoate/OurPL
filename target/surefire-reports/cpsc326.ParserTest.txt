@@ -1,0 +1,57 @@
+-------------------------------------------------------------------------------
+Test set: cpsc326.ParserTest
+-------------------------------------------------------------------------------
+Tests run: 53, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.396 s -- in cpsc326.ParserTest
+cpsc326.ParserTest.printsUnaryExpressions -- Time elapsed: 0.009 s
+cpsc326.ParserTest.printsPrecedenceUsingPrefixNotation -- Time elapsed: 0.010 s
+cpsc326.ParserTest.runtimeErrorForInvalidAdditionOperands -- Time elapsed: 0.004 s
+cpsc326.ParserTest.runtimeErrorForSubtractionOnMixedTypes -- Time elapsed: 0.003 s
+cpsc326.ParserTest.respectsComparisonBeforeEquality -- Time elapsed: 0.004 s
+cpsc326.ParserTest.handlesCommentsAndWhitespaceDuringParse -- Time elapsed: 0.002 s
+cpsc326.ParserTest.parsesPrimaryLiterals(String, String)[1] -- Time elapsed: 0.079 s
+cpsc326.ParserTest.parsesPrimaryLiterals(String, String)[2] -- Time elapsed: 0.003 s
+cpsc326.ParserTest.parsesPrimaryLiterals(String, String)[3] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.parsesPrimaryLiterals(String, String)[4] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.parsesPrimaryLiterals(String, String)[5] -- Time elapsed: 0 s
+cpsc326.ParserTest.factorOperatorsAreLeftAssociative -- Time elapsed: 0.002 s
+cpsc326.ParserTest.equalityOperatorsAreLeftAssociative -- Time elapsed: 0.001 s
+cpsc326.ParserTest.reportsUnaryPlusAsInvalidPrimary -- Time elapsed: 0.004 s
+cpsc326.ParserTest.evaluatesBooleanEqualityOutput -- Time elapsed: 0.002 s
+cpsc326.ParserTest.respectsFactorPrecedenceOverTerm -- Time elapsed: 0.003 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[1] -- Time elapsed: 0.003 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[2] -- Time elapsed: 0 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[3] -- Time elapsed: 0.001 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[4] -- Time elapsed: 0.001 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[5] -- Time elapsed: 0.001 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[6] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[7] -- Time elapsed: 0.003 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[8] -- Time elapsed: 0 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[9] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.parsesSingleBinaryExpressions(String, String)[10] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.respectsParenthesesOverDefaultPrecedence -- Time elapsed: 0.001 s
+cpsc326.ParserTest.termOperatorsAreLeftAssociative -- Time elapsed: 0.002 s
+cpsc326.ParserTest.reportsUnexpectedTokenAtStart -- Time elapsed: 0.008 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[1] -- Time elapsed: 0.003 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[2] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[3] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[4] -- Time elapsed: 0.001 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[5] -- Time elapsed: 0.004 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[6] -- Time elapsed: 0.002 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[7] -- Time elapsed: 0.003 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[8] -- Time elapsed: 0.001 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[9] -- Time elapsed: 0 s
+cpsc326.ParserTest.evaluatesExpressions(String, String)[10] -- Time elapsed: 0 s
+cpsc326.ParserTest.parsesComplexMixedExpressionFromAssignmentStyleInput -- Time elapsed: 0.001 s
+cpsc326.ParserTest.printsGroupingExplicitly -- Time elapsed: 0 s
+cpsc326.ParserTest.reportsMissingRightParen -- Time elapsed: 0.002 s
+cpsc326.ParserTest.runtimeErrorStoresTokenAndMessage -- Time elapsed: 0.004 s
+cpsc326.ParserTest.parsesUnaryExpressions(String, String)[1] -- Time elapsed: 0.005 s
+cpsc326.ParserTest.parsesUnaryExpressions(String, String)[2] -- Time elapsed: 0 s
+cpsc326.ParserTest.parsesUnaryExpressions(String, String)[3] -- Time elapsed: 0 s
+cpsc326.ParserTest.parsesUnaryExpressions(String, String)[4] -- Time elapsed: 0 s
+cpsc326.ParserTest.runtimeErrorForNumericComparisonOnBoolean -- Time elapsed: 0.004 s
+cpsc326.ParserTest.reportsEmptyInputAsExpectExpression -- Time elapsed: 0 s
+cpsc326.ParserTest.printsComparisonInsideEquality -- Time elapsed: 0 s
+cpsc326.ParserTest.stringifiesNilAsNil -- Time elapsed: 0 s
+cpsc326.ParserTest.stringifiesWholeNumberDoubleWithoutDecimalSuffix -- Time elapsed: 0 s
+cpsc326.ParserTest.runtimeErrorForUnaryMinusOnString -- Time elapsed: 0 s
