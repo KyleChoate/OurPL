@@ -15,7 +15,8 @@ class Lexer {
     private int line = 1;
     private static final Map<String, TokenType> keywords;
 
-    Lexer(String source) {
+    Lexer(String source) 
+    {
         this.source = source;
     }
 
