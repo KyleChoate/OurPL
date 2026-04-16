@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="cpsc326.LexerTest" time="0.251" tests="61" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="cpsc326.LexerTest" time="0.249" tests="61" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin"/>
-    <property name="sun.java.command" value="C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366\surefirebooter-20260416121143551_3.jar C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366 2026-04-16T12-11-43_251-jvmRun1 surefire-20260416121143551_1tmp surefire_0-20260416121143551_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\chris\AppData\Local\Temp\surefire692497930791606032\surefirebooter-20260416123759374_3.jar C:\Users\chris\AppData\Local\Temp\surefire692497930791606032 2026-04-16T12-37-57_470-jvmRun1 surefire-20260416123759374_1tmp surefire_0-20260416123759374_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\chris\OneDrive\Documents\University\2026 Spring\Languages\Homework\OurPL\target\test-classes;C:\Users\chris\OneDrive\Documents\University\2026 Spring\Languages\Homework\OurPL\target\classes;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.3\junit-jupiter-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.3\junit-jupiter-api-5.10.3.jar;C:\Users\chris\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\chris\.m2\repository\org\junit\platform\junit-platform-commons\1.10.3\junit-platform-commons-1.10.3.jar;C:\Users\chris\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.3\junit-jupiter-params-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.3\junit-jupiter-engine-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\platform\junit-platform-engine\1.10.3\junit-platform-engine-1.10.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366\surefirebooter-20260416121143551_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\chris\AppData\Local\Temp\surefire692497930791606032\surefirebooter-20260416123759374_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.10+7-LTS"/>
@@ -59,65 +59,65 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="commentOnlyInputProducesOnlyEof" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="decimalEdgeCasesMatchCurrentImplementation" classname="cpsc326.LexerTest" time="0.008"/>
-  <testcase name="underscoreCannotStartIdentifierInCurrentLexer" classname="cpsc326.LexerTest" time="0.008"/>
-  <testcase name="bangToken" classname="cpsc326.LexerTest" time="0.007"/>
-  <testcase name="unterminatedStringReportsErrorAndStillEndsWithEof" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="bangEqualToken" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="rightParenToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="complexProgramTokenization" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="stringToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="returnToken" classname="cpsc326.LexerTest" time="0.005"/>
-  <testcase name="plusToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="greaterToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="varToken" classname="cpsc326.LexerTest" time="0.008"/>
-  <testcase name="orToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="rightBraceToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="commentOnlyInputProducesOnlyEof" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="decimalEdgeCasesMatchCurrentImplementation" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="underscoreCannotStartIdentifierInCurrentLexer" classname="cpsc326.LexerTest" time="0.009"/>
+  <testcase name="bangToken" classname="cpsc326.LexerTest" time="0.006"/>
+  <testcase name="unterminatedStringReportsErrorAndStillEndsWithEof" classname="cpsc326.LexerTest" time="0.008"/>
+  <testcase name="bangEqualToken" classname="cpsc326.LexerTest" time="0.007"/>
+  <testcase name="rightParenToken" classname="cpsc326.LexerTest" time="0.009"/>
+  <testcase name="complexProgramTokenization" classname="cpsc326.LexerTest" time="0.008"/>
+  <testcase name="stringToken" classname="cpsc326.LexerTest" time="0.006"/>
+  <testcase name="returnToken" classname="cpsc326.LexerTest" time="0.006"/>
+  <testcase name="plusToken" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="greaterToken" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="varToken" classname="cpsc326.LexerTest" time="0.004"/>
+  <testcase name="orToken" classname="cpsc326.LexerTest" time="0.006"/>
+  <testcase name="rightBraceToken" classname="cpsc326.LexerTest" time="0.008"/>
   <testcase name="doubleCharacterOperatorMatchingIsGreedy" classname="cpsc326.LexerTest" time="0.006"/>
-  <testcase name="elseToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="andToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="falseToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="elseToken" classname="cpsc326.LexerTest" time="0.005"/>
+  <testcase name="andToken" classname="cpsc326.LexerTest" time="0.004"/>
+  <testcase name="falseToken" classname="cpsc326.LexerTest" time="0.002"/>
   <testcase name="identifierMayContainDigitsAfterFirstCharacter" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="thisToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="unterminatedMultilineStringReportsFinalLineAndStillEndsWithEof" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="splitOperatorsWithWhitespaceStaySeparate" classname="cpsc326.LexerTest" time="0.006"/>
-  <testcase name="eofTokenOnEmptyInput" classname="cpsc326.LexerTest" time="0.005"/>
-  <testcase name="commentAtEndOfFileWithoutTrailingNewlineIsSkipped" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="thisToken" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="unterminatedMultilineStringReportsFinalLineAndStillEndsWithEof" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="splitOperatorsWithWhitespaceStaySeparate" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="eofTokenOnEmptyInput" classname="cpsc326.LexerTest" time="0.006"/>
+  <testcase name="commentAtEndOfFileWithoutTrailingNewlineIsSkipped" classname="cpsc326.LexerTest" time="0.0"/>
   <testcase name="greaterEqualToken" classname="cpsc326.LexerTest" time="0.003"/>
-  <testcase name="hashInsideStringDoesNotStartComment" classname="cpsc326.LexerTest" time="0.003"/>
-  <testcase name="printToken" classname="cpsc326.LexerTest" time="0.003"/>
-  <testcase name="multilineStringAdvancesLineCounter" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="nilToken" classname="cpsc326.LexerTest" time="0.005"/>
-  <testcase name="lessToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="equalToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="forToken" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="slashToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="numberToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="hashInsideStringDoesNotStartComment" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="printToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="multilineStringAdvancesLineCounter" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="nilToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="lessToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="equalToken" classname="cpsc326.LexerTest" time="0.009"/>
+  <testcase name="forToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="slashToken" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="numberToken" classname="cpsc326.LexerTest" time="0.002"/>
   <testcase name="commaToken" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="semicolonToken" classname="cpsc326.LexerTest" time="0.005"/>
+  <testcase name="semicolonToken" classname="cpsc326.LexerTest" time="0.0"/>
   <testcase name="unexpectedCharacterReportsErrorAndScanningContinues" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="slashSlashIsTwoSlashTokensNotAComment" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="slashSlashIsTwoSlashTokensNotAComment" classname="cpsc326.LexerTest" time="0.007"/>
   <testcase name="commentsAndWhitespaceAreSkipped" classname="cpsc326.LexerTest" time="0.002"/>
   <testcase name="lessEqualToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="dotToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="trueToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="funToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="leftParenToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="structToken" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="whitespaceOnlyInputProducesOnlyEof" classname="cpsc326.LexerTest" time="0.001"/>
-  <testcase name="numberFollowedByLettersSplitsIntoNumberAndIdentifier" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="uppercaseLettersAreAcceptedInIdentifiers" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="dotToken" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="trueToken" classname="cpsc326.LexerTest" time="0.001"/>
+  <testcase name="funToken" classname="cpsc326.LexerTest" time="0.001"/>
+  <testcase name="leftParenToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="structToken" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="whitespaceOnlyInputProducesOnlyEof" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="numberFollowedByLettersSplitsIntoNumberAndIdentifier" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="uppercaseLettersAreAcceptedInIdentifiers" classname="cpsc326.LexerTest" time="0.005"/>
   <testcase name="uppercaseKeywordLikeIdentifierRemainsIdentifier" classname="cpsc326.LexerTest" time="0.002"/>
   <testcase name="ifToken" classname="cpsc326.LexerTest" time="0.002"/>
   <testcase name="commentThenNewlineTracksNextLineCorrectly" classname="cpsc326.LexerTest" time="0.0"/>
-  <testcase name="whileToken" classname="cpsc326.LexerTest" time="0.001"/>
-  <testcase name="identifierMayContainUnderscoreAfterFirstCharacter" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="minusToken" classname="cpsc326.LexerTest" time="0.001"/>
-  <testcase name="identifiersThatContainKeywordsRemainIdentifiers" classname="cpsc326.LexerTest" time="0.003"/>
-  <testcase name="equalEqualToken" classname="cpsc326.LexerTest" time="0.003"/>
-  <testcase name="leftBraceToken" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="multilineInputTracksLineNumbers" classname="cpsc326.LexerTest" time="0.002"/>
-  <testcase name="identifierToken" classname="cpsc326.LexerTest" time="0.004"/>
-  <testcase name="starToken" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="whileToken" classname="cpsc326.LexerTest" time="0.004"/>
+  <testcase name="identifierMayContainUnderscoreAfterFirstCharacter" classname="cpsc326.LexerTest" time="0.003"/>
+  <testcase name="minusToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="identifiersThatContainKeywordsRemainIdentifiers" classname="cpsc326.LexerTest" time="0.001"/>
+  <testcase name="equalEqualToken" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="leftBraceToken" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="multilineInputTracksLineNumbers" classname="cpsc326.LexerTest" time="0.0"/>
+  <testcase name="identifierToken" classname="cpsc326.LexerTest" time="0.002"/>
+  <testcase name="starToken" classname="cpsc326.LexerTest" time="0.0"/>
 </testsuite>

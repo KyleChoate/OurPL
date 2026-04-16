@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cpsc326</groupId>
-  <artifactId>cpsc326-ourpl-starter</artifactId>
+  <artifactId>cpsc326-ourpl</artifactId>
   <version>1</version>
 
   <properties>

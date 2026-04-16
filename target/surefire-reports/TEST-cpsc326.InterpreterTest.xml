@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="cpsc326.InterpreterTest" time="0.304" tests="9" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" version="3.0.2" name="cpsc326.InterpreterTest" time="0.142" tests="9" errors="0" skipped="0" failures="0">
   <properties>
     <property name="java.specification.version" value="21"/>
     <property name="sun.cpu.isalist" value="amd64"/>
@@ -15,7 +15,7 @@
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="user.country" value="US"/>
     <property name="sun.boot.library.path" value="C:\Program Files\Eclipse Adoptium\jdk-21.0.10.7-hotspot\bin"/>
-    <property name="sun.java.command" value="C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366\surefirebooter-20260416121143551_3.jar C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366 2026-04-16T12-11-43_251-jvmRun1 surefire-20260416121143551_1tmp surefire_0-20260416121143551_2tmp"/>
+    <property name="sun.java.command" value="C:\Users\chris\AppData\Local\Temp\surefire692497930791606032\surefirebooter-20260416123759374_3.jar C:\Users\chris\AppData\Local\Temp\surefire692497930791606032 2026-04-16T12-37-57_470-jvmRun1 surefire-20260416123759374_1tmp surefire_0-20260416123759374_2tmp"/>
     <property name="jdk.debug" value="release"/>
     <property name="surefire.test.class.path" value="C:\Users\chris\OneDrive\Documents\University\2026 Spring\Languages\Homework\OurPL\target\test-classes;C:\Users\chris\OneDrive\Documents\University\2026 Spring\Languages\Homework\OurPL\target\classes;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter\5.10.3\junit-jupiter-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-api\5.10.3\junit-jupiter-api-5.10.3.jar;C:\Users\chris\.m2\repository\org\opentest4j\opentest4j\1.3.0\opentest4j-1.3.0.jar;C:\Users\chris\.m2\repository\org\junit\platform\junit-platform-commons\1.10.3\junit-platform-commons-1.10.3.jar;C:\Users\chris\.m2\repository\org\apiguardian\apiguardian-api\1.1.2\apiguardian-api-1.1.2.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-params\5.10.3\junit-jupiter-params-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\jupiter\junit-jupiter-engine\5.10.3\junit-jupiter-engine-5.10.3.jar;C:\Users\chris\.m2\repository\org\junit\platform\junit-platform-engine\1.10.3\junit-platform-engine-1.10.3.jar;"/>
     <property name="sun.cpu.endian" value="little"/>
@@ -30,7 +30,7 @@
     <property name="line.separator" value="&#10;"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.specification.name" value="Java Platform API Specification"/>
-    <property name="surefire.real.class.path" value="C:\Users\chris\AppData\Local\Temp\surefire6492295993338765366\surefirebooter-20260416121143551_3.jar"/>
+    <property name="surefire.real.class.path" value="C:\Users\chris\AppData\Local\Temp\surefire692497930791606032\surefirebooter-20260416123759374_3.jar"/>
     <property name="user.script" value=""/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="21.0.10+7-LTS"/>
@@ -59,17 +59,17 @@
     <property name="sun.io.unicode.encoding" value="UnicodeLittle"/>
     <property name="java.class.version" value="65.0"/>
   </properties>
-  <testcase name="TestAddStringToNumber" classname="cpsc326.InterpreterTest" time="0.16">
+  <testcase name="TestAddStringToNumber" classname="cpsc326.InterpreterTest" time="0.058">
     <system-err><![CDATA[[line 1] Error: Operands must be two numbers or two strings.
 ]]></system-err>
   </testcase>
-  <testcase name="TestAddStringToString" classname="cpsc326.InterpreterTest" time="0.02"/>
-  <testcase name="TestOrderOfOperations" classname="cpsc326.InterpreterTest" time="0.011"/>
-  <testcase name="TestGroupings" classname="cpsc326.InterpreterTest" time="0.005"/>
-  <testcase name="TestNil" classname="cpsc326.InterpreterTest" time="0.0"/>
-  <testcase name="TestBooleanComparison" classname="cpsc326.InterpreterTest" time="0.01"/>
-  <testcase name="TestBooleanBang" classname="cpsc326.InterpreterTest" time="0.0"/>
-  <testcase name="TestBoolean" classname="cpsc326.InterpreterTest" time="0.0"/>
+  <testcase name="TestAddStringToString" classname="cpsc326.InterpreterTest" time="0.007"/>
+  <testcase name="TestOrderOfOperations" classname="cpsc326.InterpreterTest" time="0.004"/>
+  <testcase name="TestGroupings" classname="cpsc326.InterpreterTest" time="0.0"/>
+  <testcase name="TestNil" classname="cpsc326.InterpreterTest" time="0.003"/>
+  <testcase name="TestBooleanComparison" classname="cpsc326.InterpreterTest" time="0.0"/>
+  <testcase name="TestBooleanBang" classname="cpsc326.InterpreterTest" time="0.004"/>
+  <testcase name="TestBoolean" classname="cpsc326.InterpreterTest" time="0.002"/>
   <testcase name="TestDivideByZero" classname="cpsc326.InterpreterTest" time="0.003">
     <system-err><![CDATA[[line 1] Error: You cannot divide by zero!
 ]]></system-err>
