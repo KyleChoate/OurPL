@@ -11,7 +11,8 @@ import java.util.List;
 public class OurPL {
     
     public static void main(String[] args) throws IOException {
-        if (args.length > 1) {
+        if (args.length > 1) 
+        {
             System.out.println("Usage: OurPl [script]");
             System.exit(64);
         }
@@ -32,7 +33,8 @@ public class OurPL {
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
-    public static void runPrompt() throws IOException {
+    public static void runPrompt() throws IOException 
+    {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -47,9 +49,12 @@ public class OurPL {
         }
     }
 
-    public static void run(String source) {
+    public static void run(String source) 
+    {
         Lexer lexer = new Lexer(source);
         List<Token> tokens = lexer.scanTokens();
+
+        Parser parser = new Parser(tokens);
 
         for (Token token : tokens){
             System.out.println(token);

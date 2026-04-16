@@ -35,5 +35,5 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: OurPL
-        path: /home/runner/work/OurPL/OurPL/target/cpsc326-ourpl-1.jar
+        path: /home/runner/work/OurPL/OurPL/target/ourpl-jar-with-dependencies.jar
 

@@ -36,6 +36,7 @@
 
   <build>
     <plugins>
+
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <version>3.3.1</version>
@@ -46,6 +47,7 @@
           </consoleOutputReporter>
         </configuration>
       </plugin>
+
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
@@ -56,18 +58,33 @@
       </plugin>
       <plugin>
         <artifactId>maven-assembly-plugin</artifactId>
+
+        <executions>
+          <execution>
+            <id>make-assembly</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+
         <configuration>
           <archive>
             <manifest>
               <mainClass>cpsc326.OurPL</mainClass>
             </manifest>
           </archive>
+
+          <!-- I want to output an executable jar for practice -->
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
+
           <finalName>ourpl</finalName>
         </configuration>
       </plugin>
+
     </plugins>
   </build>
 
