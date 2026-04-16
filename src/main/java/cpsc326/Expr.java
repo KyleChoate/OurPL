@@ -75,7 +75,6 @@ abstract class Expr
   {
     Literal(Token value) 
     {
-      System.out.println("Generating default");
       switch (value.type)
       {
         // True and false do not have a literal in my Lexer

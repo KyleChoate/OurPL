@@ -63,7 +63,7 @@ class Interpreter implements Expr.Visitor<Object>{
     private void checkNumberOperand(Token operator, Object operand) 
     {
         if (!(operand instanceof Double))
-            throw new RuntimeError(operator,"Operand " + operand.toString() + " must be a number.");
+            throw new RuntimeError(operator,"Operand must be a number.");
 
         return;
     }
@@ -72,15 +72,16 @@ class Interpreter implements Expr.Visitor<Object>{
     private void checkNumberOperands(Token operator, Object left, Object right) 
     {
         if (!(left instanceof Double) && !(right instanceof Double))
-            throw new RuntimeError(operator,"Operands " + left.toString() + " and " + right.toString() + " must be numbers.");
+            throw new RuntimeError(operator,"Operands must be a number.");
 
         if (!(left instanceof Double))
-            throw new RuntimeError(operator,"Left operand " + left.toString() + " must be a number.");
+            throw new RuntimeError(operator,"Operands must be a number.");
 
         if (!(right instanceof Double))
-            throw new RuntimeError(operator,"Right operand " + right.toString() + " must be a number.");
+            throw new RuntimeError(operator,"Operands must be a number.");
 
         return;
+
     }
 
     // If null (in other words, the literal is null) returns false
@@ -179,7 +180,7 @@ class Interpreter implements Expr.Visitor<Object>{
                     return (double)left + (double)right;
                 if (left instanceof String && right instanceof String)
                     return (String)left + (String)right;
-                throw new RuntimeError(expr.operator, "Operands " + left.toString() + " and " + right.toString() + " must be two numbers or two strings.");
+                throw new RuntimeError(expr.operator, "Operands must be two numbers or two strings.");
 
             // Factor
             case STAR:

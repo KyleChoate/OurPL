@@ -127,9 +127,9 @@ class Parser {
         
         if (match(LEFT_PAREN))
         {
-            Expr paren = new Expr.Grouping(expression());
-            advance();
-            return paren;
+            Expr group = new Expr.Grouping(expression());
+            consume(RIGHT_PAREN, "Expected )");
+            return group;
         }
 
         throw error(peek(), "Expect expression.");

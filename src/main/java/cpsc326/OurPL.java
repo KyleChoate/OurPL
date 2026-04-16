@@ -30,6 +30,7 @@ public class OurPL {
     }
 
     static boolean hadError = false;
+    static boolean hadRuntimeError = false;
 
     public static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
@@ -67,6 +68,7 @@ public class OurPL {
 
     public static void runtimeError(RuntimeError error)
     {
+        hadRuntimeError = true;
         report(error.token.line, "", error.getMessage());
         // System.err.println("Error: " + error.getMessage() + " at token " + error.token);
     }
