@@ -1,6 +1,7 @@
 package cpsc326;
 
-class Interpreter implements Expr.Visitor<Object>{
+class Interpreter implements Expr.Visitor<Object>
+{
     void interpret(Expr expression) 
     {
         try 
