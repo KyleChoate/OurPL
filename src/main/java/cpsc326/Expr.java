@@ -129,10 +129,10 @@ abstract class Expr
 
   static class Logical extends Expr 
   {
-    Logical(Expr left, Token name, Expr right) 
+    Logical(Expr left, Token op, Expr right) 
     {
       this.left = left;
-      this.name = name;
+      this.op = op;
       this.right = right;
     }
     @Override
@@ -141,7 +141,7 @@ abstract class Expr
       return visitor.visitLogicalExpr(this);
     }
     final Expr left;
-    final Token name;
+    final Token op;
     final Expr right;
   }
 

@@ -196,4 +196,28 @@ class Interpreter implements Expr.Visitor<Object>
 
         return null;
     }
+
+
+    @Override
+    public Object visitAssignExpr(Expr.Assign expr) 
+    {
+        return expr.value;
+    }
+
+
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) 
+    {
+        Expr left = expr.left;
+        Expr right = expr.right;
+        Token op = expr.op;
+        return null;
+    }
+
+    @Override
+    public Object visitVariableExpr(Expr.Variable expr) 
+    {
+        return expr.name;
+    }
+
 }
