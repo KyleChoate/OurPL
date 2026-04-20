@@ -1,5 +1,6 @@
 package cpsc326;
 
+import java.util.ArrayList;
 import java.util.List;
 import static cpsc326.TokenType.*;
 
@@ -21,7 +22,8 @@ class Parser {
     {
         try 
         {
-            return expression();
+            return program();
+            // return expression();
         } 
         catch (ParseError error) 
         {
@@ -29,9 +31,150 @@ class Parser {
         }
     }
 
+    private List<Stmt> program()
+    {
+        // Initialize list of declarations
+        List<Stmt> declarations = new ArrayList<>();
+        // Add each declaration to list until hit EOF
+        while (!match(EOF))
+        {
+            Stmt declaration = declaration();
+            declarations.add(declaration);
+        }
+        return declarations;
+    }
+
+    private Stmt declaration()
+    {
+        try
+        {
+            if (match(VAR))
+                return varDecl();
+            else
+                return statement();
+        }
+        catch (ParseError error)
+        {
+            synchronize();
+            return null;
+        }
+    }
+
+    private Stmt varDecl()
+    {
+        // Consume Var not needed since match Var in declaration()
+        // Consume IDENTIFIER
+        Token name = consume(IDENTIFIER, "Expected variable name");
+        // Consume '=' and expression (optional)
+        Expr initializer = null;
+        if (match(EQUAL))
+            initializer = expression();
+        // Consume semi colon
+        consume(SEMICOLON, "Expected ';' after variable declaration");
+        // Return result
+        return new Stmt.Var(name, initializer);
+    }
+
+    private Stmt statement()
+    {
+        Token case = advance();
+        // Consume printStmt, exprStmt, block, ifStmt, whileStmt, or forStmt
+        // Return that
+        return null;
+    }
+
+    
+    private Stmt ifStmt()
+    {
+        // Consume if
+        // Consume expression
+        // Consume statement
+        // Consume else and another statement (optional)
+        return null;
+    }
+
+    private Stmt forStmt()
+    {
+        // Consume for
+        // Consume left paren
+        // Consume varDecl or exprStmt (optional)
+        // Consume  semi-colon
+        // Consume expression (optional)
+        // Consume semi-colon
+        // Consume expression (optional)
+        // Consome right_paren
+        // Consume statement
+        // Consume semi-colon
+        return null;
+    }
+
+    private Stmt whileStmt()
+    {
+        // consume while
+        // Consume left paren
+        // Consume expression
+        // Consume right paren
+        // consume statement
+        // Return result
+        return null;
+    }
+
+    private Stmt block()
+    {
+        // Consume left paren
+        // Consume declaration
+        // Consume right paren
+        // Return result
+        return null;
+    }
+
+    private Stmt exprStmt()
+    {
+        // Consume expression
+        Expr expr = expression();
+        // consume semi colon
+        consume(SEMICOLON, "Expected ';' after expression statement");
+        // Return result
+        return new Stmt.Expression(expr);
+    }
+
+    private Stmt printStmt()
+    {
+        // consume print
+        // Consume expression
+        // Consume semicolon
+        // Return result
+        return null;
+    }
+
     private Expr expression() 
     {
-        return equality();
+        return assignment();
+    }
+
+    private Expr assignment()
+    {
+        // Consume identifier
+        // Consume equal
+        // Consume assignment or logic_or
+        return null;
+    }
+
+
+    private Expr logic_or()
+    {
+        // Consume logic_and
+        // Consume (or <logic_and>) optionally infinitely many times
+        // Return result
+        return null;
+    }
+
+    private Expr logic_and()
+    {
+        // Consume equality
+        // Consume (and <equality>) optionally infinitely many times
+        // Return result
+        return null;
     }
 
     // I discovered issues with my initial recursive method and I couldn't
