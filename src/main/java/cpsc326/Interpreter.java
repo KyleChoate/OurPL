@@ -13,10 +13,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         try 
         {
             for (int i = 0; i < statements.size() ; i++)
-            {
-                Object value = evaluate(statements.get(i));
-                System.out.println(stringify(value));
-            }
+                evaluate(statements.get(i));
             
         } 
         
@@ -90,23 +87,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 
         if (!(right instanceof Double))
             throw new RuntimeError(operator,"Operands must be a number.");
-
-        return;
-
-    }
-
-
-    // Makes sure that when x <op> y, x and y are numbers (doubles)
-    private void checkBooleanOperands(Token operator, Object left, Object right) 
-    {
-        if (!(left instanceof Boolean) && !(right instanceof Boolean))
-            throw new RuntimeError(operator,"Operands must be a boolean.");
-
-        if (!(left instanceof Boolean))
-            throw new RuntimeError(operator,"Operands must be a boolean.");
-
-        if (!(right instanceof Boolean))
-            throw new RuntimeError(operator,"Operands must be a boolean.");
 
         return;
 
@@ -241,6 +221,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Object visitAssignExpr(Expr.Assign expr) 
     {
+        Token name = expr.name;
+        Object value = evaluate(expr.value);
+        environment.assign(name, value);
         return expr.value;
     }
 
@@ -258,24 +241,20 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Object visitLogicalExpr(Expr.Logical expr) 
     {
-        Object left = evaluate(expr.left);
-        Object right;
+        Object left = (isTruthy(evaluate(expr.left)));
         // If left is true, then right will be skipped for evaluation
         if ((boolean)left)
-            right = true;
-        else
-            right = evaluate(expr.right);
-        
+            return true;
+
+        Object right = (isTruthy(evaluate(expr.left)));
         Token operator = expr.operator;
 
         switch(operator.type)
         {
             // Equality
             case AND:
-                checkBooleanOperands(expr.operator, left, right);
                 return (boolean)left && (boolean)right;
             case OR:
-                checkBooleanOperands(expr.operator, left, right);
                 return (boolean)left && (boolean)right;
             default:
                 break;
@@ -303,14 +282,14 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     public Void visitBlockStmt(Stmt.Block stmt) 
     {
         // Enter new environment
+        Environment tmp = environment;
         environment = new Environment(environment);
         // Evaluate all statements in block
         List<Stmt> statements = stmt.statements;
         for (int i = 0; i < statements.size() ; i++)
-        {
-            Object value = evaluate(statements.get(i));
-            System.out.println(stringify(value));
-        }
+            evaluate(statements.get(i));
+
+        environment = tmp;
         return null;
     }
 
@@ -358,7 +337,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     {
         Token name = stmt.name;
         Expr initializer = stmt.initializer;
-        environment.assign(name, evaluate(initializer));
+        environment.define(name.lexeme, evaluate(initializer));
         return null;
     }
 

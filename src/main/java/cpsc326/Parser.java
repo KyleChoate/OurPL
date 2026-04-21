@@ -13,9 +13,6 @@ class Parser {
     Parser(List<Token> tokens) 
     {
         this.tokens = tokens;
-        // for (Token token : this.tokens){
-        //     System.out.println(token);
-        // }
     }
 
     List<Stmt> parse() 
@@ -121,50 +118,70 @@ class Parser {
 
     }
 
-    private Stmt forStmt()
+private Stmt forStmt()
+{
+    consume(FOR, "Expected 'for'");
+    consume(LEFT_PAREN, "Expected '('");
+
+    // Consume initializer, which will be none, varDecl, or exprStmt
+    Stmt initializer = null;
+    if (!check(SEMICOLON))
     {
-        Stmt varDecl;
-        Expr condition;
-        Expr iterator;
-        Stmt statement;
-        // Initialize variables
-        // Consume for
-        consume(FOR, "Expected 'for'");
-        // Consume left paren
-        consume(LEFT_PAREN, "Expected '('");
-        // Consume varDecl or exprStmt (optional)
-        if (!match(SEMICOLON))
-        {
-            varDecl = varDecl();
-            // Consume semi-colon
-            consume(SEMICOLON, "Expected ';' after variable declaration");
-        }
-        // Consume expression/condition (optional)
-        if (!match(SEMICOLON))
-        {
-            condition = expression();
-            // Consume semi-colon
-            consume(SEMICOLON, "Expected ';' after variable declaration");
-        }
-        // Make condition true if it is blank
+        if (match(VAR))
+            initializer = varDecl(); // Will consume semicolon
         else
-            condition = new Expr.Literal(new Token(TRUE, "true", null, 0));
-        // Consume expression (optional)
-        if (!match(SEMICOLON))
-        {
-            iterator = expression();
-            // Consume semi-colon
-            consume(SEMICOLON, "Expected ';' after iterator");
-        }
-        // Consome right_paren
-        consume(LEFT_PAREN, "Expected ')'");
-        // Consume statement
-        statement = statement();
-        // Consume semi-colon
-        consume(SEMICOLON, "Expected ';'");
-        // Generate a while
-        return new Stmt.While(condition, statement);
+            initializer = exprStmt(); // Will consume semicolon
     }
+    else
+        consume(SEMICOLON, "Missing ';'");
+
+    // Consume condition
+    Expr condition = null;
+    if (!check(SEMICOLON))
+        condition = expression();
+    consume(SEMICOLON, "Missing ';'");
+
+    // Consume incrementer (optional)
+    Expr incrementer = null;
+    if (!check(RIGHT_PAREN))
+        incrementer = expression();
+    consume(RIGHT_PAREN, "Expected ')'");
+    Stmt incrementerStmt = new Stmt.Expression(incrementer);
+
+    // Consume body
+    Stmt statement = statement();    
+    if (incrementer != null)
+    {
+        if (statement instanceof Stmt.Block)
+        {
+            List<Stmt> tmp = ((Stmt.Block)statement).statements;
+            tmp.add(incrementerStmt);
+        }
+        else
+        {
+            List<Stmt> tmp = new ArrayList<>();
+            tmp.add(statement);
+            tmp.add(incrementerStmt);
+            statement = new Stmt.Block(tmp);
+        }
+    }
+
+    // Default condition
+    if (condition == null)
+        condition = new Expr.Literal(new Token(TRUE, "true", null, 0));
+
+    Stmt while_loop = new Stmt.While(condition, statement);
+
+    if (initializer != null)
+    {
+        List<Stmt> tmp = new ArrayList<>();
+        tmp.add(initializer);
+        tmp.add(while_loop);
+        return new Stmt.Block(tmp);
+    }
+    else
+        return while_loop;
+}
 
     private Stmt whileStmt()
     {
@@ -190,7 +207,7 @@ class Parser {
         // Consume left paren
         consume(LEFT_BRACE, "Expected '{'");
         // Create list of declarations until you hit a right paren
-        while (!match(RIGHT_PAREN))
+        while (!match(RIGHT_BRACE))
         {
             Stmt declaration = declaration();
             declarations.add(declaration);
@@ -230,14 +247,19 @@ class Parser {
     private Expr assignment()
     {
         // Consume (IDENTIFIER <assignment>) or <logic_or>
-        if (match(IDENTIFIER))
-        {
-            Token identifier = previous();
-
-            if (match(EQUAL))
+        // The grammar I was provided is not LL(1) 
+        if ((tokens.get(current).type == IDENTIFIER) && (tokens.get(current + 1).type == EQUAL))
+        {            
+            // error(peek(), "Activated assignemtn match");
+            Token identifier = advance();
+            advance();
+            // if (match(EQUAL))
                 return new Expr.Assign(identifier, assignment());
-            else
-                return new Expr.Variable(previous());
+
+            
+
+            // else
+            //     return logic_or();
         } 
         else
             return logic_or();
@@ -246,6 +268,7 @@ class Parser {
 
     private Expr logic_or()
     {
+        
         Expr left;
         Token operator;
         Expr right;

@@ -52,7 +52,8 @@ class ParserTest2
         }
     }
 
-    private EvalOutcome interpret(String source) {
+    private EvalOutcome interpret(String source) 
+    {
         PrintStream originalOut = System.out;
         PrintStream originalErr = System.err;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -61,7 +62,13 @@ class ParserTest2
         System.setErr(new PrintStream(err));
         try {
             new Interpreter().interpret(parse(source));
-            return new EvalOutcome(out.toString().trim(), err.toString().trim());
+            // Removes \r from windows newline
+            return new EvalOutcome
+            (
+                out.toString().replace("\r", "").trim(),
+                err.toString().replace("\r", "").trim()
+            );
+            // return new EvalOutcome(out.toString().trim(), err.toString().trim());
         } finally {
             System.setOut(originalOut);
             System.setErr(originalErr);
@@ -117,29 +124,28 @@ class ParserTest2
     @Test
     void bindsElseToNearestIf() 
     {
-        // System.out.println("I like cheese");
-        // Stmt stmt = parseSingleStatement("if (a) if (b) print 1; else print 2;");
-        // assertTrue(stmt instanceof Stmt.If);
+        Stmt stmt = parseSingleStatement("if (a) if (b) print 1; else print 2;");
+        assertTrue(stmt instanceof Stmt.If);
 
-        // Stmt.If outer = (Stmt.If) stmt;
-        // assertTrue(outer.condition instanceof Expr.Variable);
-        // assertEquals("a", ((Expr.Variable) outer.condition).name.lexeme);
-        // assertNull(outer.elseBranch);
-        // assertTrue(outer.thenBranch instanceof Stmt.If);
+        Stmt.If outer = (Stmt.If) stmt;
+        assertTrue(outer.condition instanceof Expr.Variable);
+        assertEquals("a", ((Expr.Variable) outer.condition).name.lexeme);
+        assertNull(outer.elseBranch);
+        assertTrue(outer.thenBranch instanceof Stmt.If);
 
-        // Stmt.If inner = (Stmt.If) outer.thenBranch;
-        // assertTrue(inner.condition instanceof Expr.Variable);
-        // assertEquals("b", ((Expr.Variable) inner.condition).name.lexeme);
-        // assertTrue(inner.thenBranch instanceof Stmt.Print);
-        // assertTrue(inner.elseBranch instanceof Stmt.Print);
+        Stmt.If inner = (Stmt.If) outer.thenBranch;
+        assertTrue(inner.condition instanceof Expr.Variable);
+        assertEquals("b", ((Expr.Variable) inner.condition).name.lexeme);
+        assertTrue(inner.thenBranch instanceof Stmt.Print);
+        assertTrue(inner.elseBranch instanceof Stmt.Print);
 
-        // Expr thenExpr = ((Stmt.Print) inner.thenBranch).expression;
-        // assertTrue(thenExpr instanceof Expr.Literal);
-        // assertEquals(1.0, ((Expr.Literal) thenExpr).value);
+        Expr thenExpr = ((Stmt.Print) inner.thenBranch).expression;
+        assertTrue(thenExpr instanceof Expr.Literal);
+        assertEquals(1.0, ((Expr.Literal) thenExpr).value);
 
-        // Expr elseExpr = ((Stmt.Print) inner.elseBranch).expression;
-        // assertTrue(elseExpr instanceof Expr.Literal);
-        // assertEquals(2.0, ((Expr.Literal) elseExpr).value);
+        Expr elseExpr = ((Stmt.Print) inner.elseBranch).expression;
+        assertTrue(elseExpr instanceof Expr.Literal);
+        assertEquals(2.0, ((Expr.Literal) elseExpr).value);
     }
 
     @Test
@@ -264,6 +270,15 @@ class ParserTest2
     }
 
     @Test
+    void rawLoopTest()
+    {
+        String source = "var i = 0; for (; i < 2; ) { print i; i = i + 1; }";
+        new Interpreter().interpret(parse(source));
+        assertFalse(OurPL.hadRuntimeError);
+    }
+
+
+    @Test
     void interpretsForLoop() {
         EvalOutcome out = interpret("for (var i = 0; i < 3; i = i + 1) print i;");
         assertFalse(OurPL.hadRuntimeError);
@@ -271,7 +286,8 @@ class ParserTest2
     }
 
     @Test
-    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() {
+    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() 
+    {
         EvalOutcome out = interpret("var i = 0; for (; i < 2; ) { print i; i = i + 1; }");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1", out.stdout);
