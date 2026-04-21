@@ -1,12 +1,20 @@
 package cpsc326;
 
-class Interpreter implements Expr.Visitor<Object>{
-    void interpret(Expr expression) 
+import java.util.List;
+
+class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
+{
+
+    private Environment environment;
+
+    void interpret(List<Stmt> statements) 
     {
+        environment = new Environment();
         try 
         {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (int i = 0; i < statements.size() ; i++)
+                evaluate(statements.get(i));
+            
         } 
         
         catch (RuntimeError error) 
@@ -84,6 +92,7 @@ class Interpreter implements Expr.Visitor<Object>{
 
     }
 
+
     // If null (in other words, the literal is null) returns false
     // If boolean, returns its value
     // Anything else (numbers, string) is true
@@ -143,6 +152,11 @@ class Interpreter implements Expr.Visitor<Object>{
         return expr.accept(this);
     }
 
+    private Object evaluate(Stmt stmt) 
+    {
+        return stmt.accept(this);
+    }
+
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) 
     {
@@ -195,4 +209,148 @@ class Interpreter implements Expr.Visitor<Object>{
 
         return null;
     }
+
+
+
+
+
+
+
+
+    
+    @Override
+    public Object visitAssignExpr(Expr.Assign expr) 
+    {
+        Token name = expr.name;
+        Object value = evaluate(expr.value);
+        environment.assign(name, value);
+        return expr.value;
+    }
+
+
+
+
+    // 
+    // 
+    //
+    // WORK ON THESE AND BELOW
+    // 
+    // Expr Changes
+    // 
+    //
+    @Override
+    public Object visitLogicalExpr(Expr.Logical expr) 
+    {
+        Object left = (isTruthy(evaluate(expr.left)));
+        // If left is true, then right will be skipped for evaluation
+        if ((boolean)left)
+            return true;
+
+        Object right = (isTruthy(evaluate(expr.left)));
+        Token operator = expr.operator;
+
+        switch(operator.type)
+        {
+            // Equality
+            case AND:
+                return (boolean)left && (boolean)right;
+            case OR:
+                return (boolean)left && (boolean)right;
+            default:
+                break;
+        }
+        return null;
+    }
+
+
+    @Override
+    public Object visitVariableExpr(Expr.Variable expr) 
+    {
+        Token name = expr.name;
+        return environment.get(name);
+    }
+
+
+
+    //
+    //
+    //
+    // Stmt changes
+    //
+    //
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) 
+    {
+        // Enter new environment
+        Environment tmp = environment;
+        environment = new Environment(environment);
+        // Evaluate all statements in block
+        List<Stmt> statements = stmt.statements;
+        for (int i = 0; i < statements.size() ; i++)
+            evaluate(statements.get(i));
+
+        environment = tmp;
+        return null;
+    }
+
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) 
+    {
+        Expr expression = stmt.expression;
+        evaluate(expression);
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) 
+    {
+        Expr condition = stmt.condition;
+        Stmt thenBranch = stmt.thenBranch;
+        Stmt elseBranch = stmt.elseBranch;
+
+
+        // Evaluates condition and runs corresponding branch
+        // If it is a boolean, it will parse as boolean
+        // If a normal object, returns true
+        // If null, will return false
+        if (isTruthy(evaluate(condition)))
+            evaluate(thenBranch);
+        else
+            evaluate(elseBranch);
+
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) 
+    {
+        Expr expression = stmt.expression;
+        Object value = evaluate(expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
+
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) 
+    {
+        Token name = stmt.name;
+        Expr initializer = stmt.initializer;
+        environment.define(name.lexeme, evaluate(initializer));
+        return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) 
+    {
+        Expr condition = stmt.condition;
+        Stmt body = stmt.body;
+        while (isTruthy(evaluate(condition)))
+        {
+            evaluate(body);
+        }
+        return null;
+    }
+
 }
