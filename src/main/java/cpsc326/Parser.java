@@ -18,7 +18,7 @@ class Parser {
         // }
     }
 
-    Expr parse() 
+    List<Stmt> parse() 
     {
         try 
         {
@@ -36,7 +36,7 @@ class Parser {
         // Initialize list of declarations
         List<Stmt> declarations = new ArrayList<>();
         // Add each declaration to list until hit EOF
-        while (!match(EOF))
+        while (!isAtEnd())
         {
             Stmt declaration = declaration();
             declarations.add(declaration);
@@ -77,55 +77,126 @@ class Parser {
 
     private Stmt statement()
     {
-        Token case = advance();
-        // Consume printStmt, exprStmt, block, ifStmt, whileStmt, or forStmt
-        // Return that
-        return null;
+        // Peek for printStmt, exprStmt, block, ifStmt, whileStmt, or forStmt
+        switch(peek().type)
+        {
+            case PRINT: 
+                return printStmt(); 
+            case LEFT_BRACE:
+                return block();
+            case IF:
+                return ifStmt();
+            case WHILE:
+                return whileStmt();
+            case FOR:
+                return forStmt();
+            default:
+                return exprStmt();
+        }
     }
 
     
     private Stmt ifStmt()
     {
+        // Initialize variables
+        Expr condition;
+        Stmt thenBranch;
+        Stmt elseBranch;
         // Consume if
+        consume(IF, "Expected 'if'");
+        // Consume left parenthesis
+        consume(LEFT_PAREN, "Expected '('");
         // Consume expression
-        // Consume statement
-        // Consume else and another statement (optional)
-        return null;
+        condition = expression();
+        consume(RIGHT_PAREN, "Expected ')'");
+        // Consume thenBranch
+        thenBranch = statement();
+        // Consume else and elseStatement (optional)
+        if (match(ELSE))
+            elseBranch = statement();
+        else 
+            elseBranch = null;
+        // Return result
+        return new Stmt.If(condition, thenBranch, elseBranch);
+
     }
 
     private Stmt forStmt()
     {
+        Stmt varDecl;
+        Expr condition;
+        Expr iterator;
+        Stmt statement;
+        // Initialize variables
         // Consume for
+        consume(FOR, "Expected 'for'");
         // Consume left paren
+        consume(LEFT_PAREN, "Expected '('");
         // Consume varDecl or exprStmt (optional)
-        // Consume  semi-colon
+        if (!match(SEMICOLON))
+        {
+            varDecl = varDecl();
+            // Consume semi-colon
+            consume(SEMICOLON, "Expected ';' after variable declaration");
+        }
+        // Consume expression/condition (optional)
+        if (!match(SEMICOLON))
+        {
+            condition = expression();
+            // Consume semi-colon
+            consume(SEMICOLON, "Expected ';' after variable declaration");
+        }
+        // Make condition true if it is blank
+        else
+            condition = new Expr.Literal(new Token(TRUE, "true", null, 0));
         // Consume expression (optional)
-        // Consume semi-colon
-        // Consume expression (optional)
+        if (!match(SEMICOLON))
+        {
+            iterator = expression();
+            // Consume semi-colon
+            consume(SEMICOLON, "Expected ';' after iterator");
+        }
         // Consome right_paren
+        consume(LEFT_PAREN, "Expected ')'");
         // Consume statement
+        statement = statement();
         // Consume semi-colon
-        return null;
+        consume(SEMICOLON, "Expected ';'");
+        // Generate a while
+        return new Stmt.While(condition, statement);
     }
 
     private Stmt whileStmt()
     {
+        Expr condition;
+        Stmt statement;
         // consume while
+        consume(WHILE, "Expected 'while'");
         // Consume left paren
+        consume(LEFT_PAREN, "Expected '('");
         // Consume expression
+        condition = expression();
         // Consume right paren
+        consume(RIGHT_PAREN, "Expected ')'");
         // consume statement
+        statement = statement();
         // Return result
-        return null;
+        return new Stmt.While(condition, statement);
     }
 
     private Stmt block()
     {
+        List<Stmt> declarations = new ArrayList<>();
         // Consume left paren
-        // Consume declaration
-        // Consume right paren
+        consume(LEFT_BRACE, "Expected '{'");
+        // Create list of declarations until you hit a right paren
+        while (!match(RIGHT_PAREN))
+        {
+            Stmt declaration = declaration();
+            declarations.add(declaration);
+        }
         // Return result
-        return null;
+        return new Stmt.Block(declarations);
     }
 
     private Stmt exprStmt()
@@ -140,11 +211,15 @@ class Parser {
 
     private Stmt printStmt()
     {
+        Expr expression;
         // consume print
+        consume(PRINT, "Expected 'print'");
         // Consume expression
+        expression = expression();
         // Consume semicolon
+        consume(SEMICOLON, "Expected ';'");
         // Return result
-        return null;
+        return new Stmt.Print(expression);
     }
 
     private Expr expression() 
@@ -154,27 +229,55 @@ class Parser {
 
     private Expr assignment()
     {
-        // Consume identifier
-        // Consume equal
-        // Consume assignment or logic_or
-        return null;
+        // Consume (IDENTIFIER <assignment>) or <logic_or>
+        if (match(IDENTIFIER))
+        {
+            Token identifier = previous();
+
+            if (match(EQUAL))
+                return new Expr.Assign(identifier, assignment());
+            else
+                return new Expr.Variable(previous());
+        } 
+        else
+            return logic_or();
     }
 
 
     private Expr logic_or()
     {
-        // Consume logic_and
+        Expr left;
+        Token operator;
+        Expr right;
+        // Consume <logic_and>
+        left = logic_and();
         // Consume (or <logic_and>) optionally infinitely many times
+        while (match(OR))
+        {
+            operator = previous();
+            right = logic_and();
+            left = new Expr.Logical(left, operator, right);
+        }
         // Return result
-        return null;
+        return left;
     }
 
     private Expr logic_and()
     {
-        // Consume equality
+        Expr left;
+        Token operator;
+        Expr right;
+        // Consume <equality>
+        left = equality();
         // Consume (and <equality>) optionally infinitely many times
+        while (match(AND))
+        {
+            operator = previous();
+            right = equality();
+            left = new Expr.Logical(left, operator, right);
+        }
         // Return result
-        return null;
+        return left;
     }
 
     // I discovered issues with my initial recursive method and I couldn't
@@ -273,6 +376,11 @@ class Parser {
             Expr group = new Expr.Grouping(expression());
             consume(RIGHT_PAREN, "Expected )");
             return group;
+        }
+
+        if (match(IDENTIFIER))
+        {
+            return new Expr.Variable(previous());
         }
 
         throw error(peek(), "Expect expression.");

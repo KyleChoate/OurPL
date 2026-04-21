@@ -21,11 +21,11 @@ abstract class Stmt
 
   static class Block extends Stmt
   {
-    final List<Stmt> stmt;
+    final List<Stmt> statements;
 
-    Block(List<Stmt> stmt) 
+    Block(List<Stmt> statements) 
     {
-      this.stmt = stmt;
+      this.statements = statements;
     }
 
     @Override
@@ -53,11 +53,15 @@ abstract class Stmt
 
   static class If extends Stmt
   {
-    final Expr expr;
+    final Expr condition;
+    final Stmt thenBranch;
+    final Stmt elseBranch;
 
-    If(Expr expr) 
+    If(Expr condition, Stmt thenBranch, Stmt elseBranch) 
     {
-      this.expr = expr;
+      this.condition = condition;
+      this.thenBranch = thenBranch;
+      this.elseBranch = elseBranch;
     }
 
     @Override
@@ -69,11 +73,11 @@ abstract class Stmt
 
   static class Print extends Stmt
   {
-    final Expr expr;
+    final Expr expression;
 
-    Print(Expr expr) 
+    Print(Expr expression) 
     {
-      this.expr = expr;
+      this.expression = expression;
     }
 
     @Override
@@ -86,12 +90,12 @@ abstract class Stmt
   static class Var extends Stmt
   {
     final Token name;
-    final Expr expr;
+    final Expr initializer;
 
-    Var(Token name, Expr expr) 
+    Var(Token name, Expr initializer) 
     {
       this.name = name;
-      this.expr = expr;
+      this.initializer = initializer;
     }
 
     @Override

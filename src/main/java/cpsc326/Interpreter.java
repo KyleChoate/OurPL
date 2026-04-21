@@ -1,13 +1,23 @@
 package cpsc326;
 
-class Interpreter implements Expr.Visitor<Object>
+import java.util.List;
+
+class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 {
-    void interpret(Expr expression) 
+
+    private Environment environment;
+
+    void interpret(List<Stmt> statements) 
     {
+        environment = new Environment();
         try 
         {
-            Object value = evaluate(expression);
-            System.out.println(stringify(value));
+            for (int i = 0; i < statements.size() ; i++)
+            {
+                Object value = evaluate(statements.get(i));
+                System.out.println(stringify(value));
+            }
+            
         } 
         
         catch (RuntimeError error) 
@@ -85,6 +95,24 @@ class Interpreter implements Expr.Visitor<Object>
 
     }
 
+
+    // Makes sure that when x <op> y, x and y are numbers (doubles)
+    private void checkBooleanOperands(Token operator, Object left, Object right) 
+    {
+        if (!(left instanceof Boolean) && !(right instanceof Boolean))
+            throw new RuntimeError(operator,"Operands must be a boolean.");
+
+        if (!(left instanceof Boolean))
+            throw new RuntimeError(operator,"Operands must be a boolean.");
+
+        if (!(right instanceof Boolean))
+            throw new RuntimeError(operator,"Operands must be a boolean.");
+
+        return;
+
+    }
+
+
     // If null (in other words, the literal is null) returns false
     // If boolean, returns its value
     // Anything else (numbers, string) is true
@@ -144,6 +172,11 @@ class Interpreter implements Expr.Visitor<Object>
         return expr.accept(this);
     }
 
+    private Object evaluate(Stmt stmt) 
+    {
+        return stmt.accept(this);
+    }
+
     @Override
     public Object visitBinaryExpr(Expr.Binary expr) 
     {
@@ -198,6 +231,13 @@ class Interpreter implements Expr.Visitor<Object>
     }
 
 
+
+
+
+
+
+
+    
     @Override
     public Object visitAssignExpr(Expr.Assign expr) 
     {
@@ -205,19 +245,133 @@ class Interpreter implements Expr.Visitor<Object>
     }
 
 
+
+
+    // 
+    // 
+    //
+    // WORK ON THESE AND BELOW
+    // 
+    // Expr Changes
+    // 
+    //
     @Override
     public Object visitLogicalExpr(Expr.Logical expr) 
     {
-        Expr left = expr.left;
-        Expr right = expr.right;
-        Token op = expr.op;
+        Object left = evaluate(expr.left);
+        Object right;
+        // If left is true, then right will be skipped for evaluation
+        if ((boolean)left)
+            right = true;
+        else
+            right = evaluate(expr.right);
+        
+        Token operator = expr.operator;
+
+        switch(operator.type)
+        {
+            // Equality
+            case AND:
+                checkBooleanOperands(expr.operator, left, right);
+                return (boolean)left && (boolean)right;
+            case OR:
+                checkBooleanOperands(expr.operator, left, right);
+                return (boolean)left && (boolean)right;
+            default:
+                break;
+        }
         return null;
     }
+
 
     @Override
     public Object visitVariableExpr(Expr.Variable expr) 
     {
-        return expr.name;
+        Token name = expr.name;
+        return environment.get(name);
+    }
+
+
+
+    //
+    //
+    //
+    // Stmt changes
+    //
+    //
+    @Override
+    public Void visitBlockStmt(Stmt.Block stmt) 
+    {
+        // Enter new environment
+        environment = new Environment(environment);
+        // Evaluate all statements in block
+        List<Stmt> statements = stmt.statements;
+        for (int i = 0; i < statements.size() ; i++)
+        {
+            Object value = evaluate(statements.get(i));
+            System.out.println(stringify(value));
+        }
+        return null;
+    }
+
+
+    @Override
+    public Void visitExpressionStmt(Stmt.Expression stmt) 
+    {
+        Expr expression = stmt.expression;
+        evaluate(expression);
+        return null;
+    }
+
+    @Override
+    public Void visitIfStmt(Stmt.If stmt) 
+    {
+        Expr condition = stmt.condition;
+        Stmt thenBranch = stmt.thenBranch;
+        Stmt elseBranch = stmt.elseBranch;
+
+
+        // Evaluates condition and runs corresponding branch
+        // If it is a boolean, it will parse as boolean
+        // If a normal object, returns true
+        // If null, will return false
+        if (isTruthy(evaluate(condition)))
+            evaluate(thenBranch);
+        else
+            evaluate(elseBranch);
+
+        return null;
+    }
+
+    @Override
+    public Void visitPrintStmt(Stmt.Print stmt) 
+    {
+        Expr expression = stmt.expression;
+        Object value = evaluate(expression);
+        System.out.println(stringify(value));
+        return null;
+    }
+
+
+    @Override
+    public Void visitVarStmt(Stmt.Var stmt) 
+    {
+        Token name = stmt.name;
+        Expr initializer = stmt.initializer;
+        environment.assign(name, evaluate(initializer));
+        return null;
+    }
+
+    @Override
+    public Void visitWhileStmt(Stmt.While stmt) 
+    {
+        Expr condition = stmt.condition;
+        Stmt body = stmt.body;
+        while (isTruthy(evaluate(condition)))
+        {
+            evaluate(body);
+        }
+        return null;
     }
 
 }
