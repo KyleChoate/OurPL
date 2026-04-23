@@ -7,7 +7,8 @@ import java.util.Map;
 
 import static cpsc326.TokenType.*;
 
-class Lexer {
+class Lexer 
+{
     private final String source;
     private final List<Token> tokens = new ArrayList<>();
     private int start = 0;
@@ -15,11 +16,13 @@ class Lexer {
     private int line = 1;
     private static final Map<String, TokenType> keywords;
 
-    Lexer(String source) {
+    Lexer(String source) 
+    {
         this.source = source;
     }
 
-    static {
+    static 
+    {
         keywords = new HashMap<>();
         keywords.put("and", AND);
         keywords.put("or", OR);
@@ -38,8 +41,10 @@ class Lexer {
         keywords.put("var", VAR);
     }
 
-    List<Token> scanTokens() {
-        while(!isAtEnd()) {
+    List<Token> scanTokens() 
+    {
+        while(!isAtEnd()) 
+        {
             start = current;
             scanToken();
         }
@@ -48,59 +53,72 @@ class Lexer {
         return tokens;
     }
 
-    private boolean isAtEnd() {
+    private boolean isAtEnd() 
+    {
         return current >= source.length();
     }
 
-    private char advance() {
+    private char advance() 
+    {
         return source.charAt(current++);
     }
 
-    private boolean match(char expected) {
+    private boolean match(char expected) 
+    {
         if (isAtEnd()) return false;
         if (source.charAt(current) != expected) return false;
         current++;
         return true;
     }
 
-    private char peek() {
+    private char peek() 
+    {
         if (isAtEnd()) return '\0';
         return source.charAt(current);
     }
 
-    private char peekNext() {
+    private char peekNext() 
+    {
         if (current+1 >= source.length()) return '\0';
         return source.charAt(current+1);
     }
 
-    private boolean isDigit(char c) {
+    private boolean isDigit(char c) 
+    {
         return c >= '0' && c <= '9';
     }
 
-    private boolean isAlpha(char c) {
+    private boolean isAlpha(char c) 
+    {
         return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
     }
 
-    private boolean isAlphaNumeric(char c) {
+    private boolean isAlphaNumeric(char c) 
+    {
         return c == '_' || isAlpha(c) || isDigit(c);
     }
 
-    private void addToken(TokenType type) {
+    private void addToken(TokenType type) 
+    {
         addToken(type,null);
     }
 
-    private void addToken(TokenType type, Object literal) {
+    private void addToken(TokenType type, Object literal) 
+    {
         String text = source.substring(start, current);
         tokens.add(new Token(type, text, literal, line));
     }
 
-    private void string() {
-        while (peek() != '"' && !isAtEnd()) {
+    private void string() 
+    {
+        while (peek() != '"' && !isAtEnd()) 
+        {
             if(peek() == '\n') line++;
             advance();
         }
 
-        if (isAtEnd()){
+        if (isAtEnd())
+        {
             OurPL.error(line, "Unterminated string.");
             return;
         }
@@ -110,28 +128,37 @@ class Lexer {
         addToken(STRING, value);
     }
 
-    private void number() {
+    private void number() 
+    {
         while(isDigit(peek())) advance();
-        if (peek() == '.' && isDigit(peekNext())) {
+        if (peek() == '.' && isDigit(peekNext())) 
+        {
             advance();
-
-            while (isDigit(peek())) advance();
+            while (isDigit(peek()))
+                advance();
         }
         addToken(NUMBER, Double.parseDouble(source.substring(start, current)));
     }
 
-    private void identifier() {
-        while (isAlphaNumeric(peek())) advance();
+    private void identifier() 
+    {
+        while (isAlphaNumeric(peek()))
+            advance();
 
         String text = source.substring(start, current);
         TokenType type = keywords.get(text);
-        if (type == null) type = IDENTIFIER;
+
+        if (type == null) 
+            type = IDENTIFIER;
+
         addToken(type);
     }
 
-    private void scanToken() {
+    private void scanToken() 
+    {
         char c = advance();
-        switch (c) {
+        switch (c) 
+        {
             case '(': addToken(LEFT_PAREN); break;
             case ')': addToken(RIGHT_PAREN); break;
             case '}': addToken(RIGHT_BRACE); break;
@@ -169,13 +196,12 @@ class Lexer {
             case '"': string(); break;
 
             default:
-                if(isDigit(c)) {
+                if(isDigit(c)) 
                     number();
-                } else if (isAlpha(c)) {
+                else if (isAlpha(c))
                     identifier();
-                } else {
+                else 
                     OurPL.error(line, "Unexpected character.");
-                }
                 break;
         }
 

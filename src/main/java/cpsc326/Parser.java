@@ -6,34 +6,54 @@ import java.util.Arrays;
 import static cpsc326.TokenType.*;
 
 class Parser {
-    private static class ParseError extends RuntimeException{ }
+    private static class ParseError extends RuntimeException
+    { 
+
+    }
 
     private final List<Token> tokens;
     private int current = 0;
 
-    Parser(List<Token> tokens) {
+    Parser(List<Token> tokens) 
+    {
         this.tokens = tokens;
     }
 
-    List<Stmt> parse() {
+    List<Stmt> parse() 
+    {
         List<Stmt> statements = new ArrayList<>();
-        while(!isAtEnd()) {
+
+        while(!isAtEnd()) 
             statements.add(declaration());
-        }
+        
         return statements;
        
     }
 
-    private Stmt declaration() {
-        try {
-            if (match(VAR)) {
+    private Stmt declaration() 
+    {
+        try 
+        {
+            if (match(VAR)) 
                 return varDeclaration();
-            }
+            
+            if (match(FUN))
+                return function();
+
             return statement();
-        } catch(ParseError error) {
+        }
+        catch(ParseError error) 
+        {
             synchronize();
             return null;
         }
+    }
+
+    private Stmt.Function function()
+    {
+        Token name = consume(IDENTIFIER, "Expected function identifieier");
+        
+        return null;
     }
 
     private Stmt varDeclaration() {

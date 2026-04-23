@@ -12,12 +12,14 @@ import org.junit.jupiter.api.Test;
 
 class LexerTest {
 
-    private List<Token> scan(String source) {
+    private List<Token> scan(String source) 
+    {
         OurPL.hadError = false;
         return new Lexer(source).scanTokens();
     }
 
-    private void assertToken(Token token, TokenType type, String lexeme, Object literal, int line) {
+    private void assertToken(Token token, TokenType type, String lexeme, Object literal, int line) 
+    {
         assertEquals(type, token.type);
         assertEquals(lexeme, token.lexeme);
         assertEquals(literal, token.literal);
@@ -25,7 +27,8 @@ class LexerTest {
     }
 
     @Test
-    void leftParenToken() {
+    void leftParenToken() 
+    {
         List<Token> tokens = scan("(");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.LEFT_PAREN, "(", null, 1);
@@ -33,7 +36,8 @@ class LexerTest {
     }
 
     @Test
-    void rightParenToken() {
+    void rightParenToken() 
+    {
         List<Token> tokens = scan(")");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.RIGHT_PAREN, ")", null, 1);
@@ -41,7 +45,8 @@ class LexerTest {
     }
 
     @Test
-    void leftBraceToken() {
+    void leftBraceToken() 
+    {
         List<Token> tokens = scan("{");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.LEFT_BRACE, "{", null, 1);
@@ -49,7 +54,8 @@ class LexerTest {
     }
 
     @Test
-    void rightBraceToken() {
+    void rightBraceToken() 
+    {
         List<Token> tokens = scan("}");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.RIGHT_BRACE, "}", null, 1);
@@ -57,7 +63,8 @@ class LexerTest {
     }
 
     @Test
-    void commaToken() {
+    void commaToken() 
+    {
         List<Token> tokens = scan(",");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.COMMA, ",", null, 1);
@@ -65,7 +72,8 @@ class LexerTest {
     }
 
     @Test
-    void dotToken() {
+    void dotToken() 
+    {
         List<Token> tokens = scan(".");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.DOT, ".", null, 1);
@@ -73,7 +81,8 @@ class LexerTest {
     }
 
     @Test
-    void plusToken() {
+    void plusToken() 
+    {
         List<Token> tokens = scan("+");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.PLUS, "+", null, 1);
@@ -81,7 +90,8 @@ class LexerTest {
     }
 
     @Test
-    void minusToken() {
+    void minusToken() 
+    {
         List<Token> tokens = scan("-");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.MINUS, "-", null, 1);
@@ -89,7 +99,8 @@ class LexerTest {
     }
 
     @Test
-    void starToken() {
+    void starToken() 
+    {
         List<Token> tokens = scan("*");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.STAR, "*", null, 1);
@@ -97,7 +108,8 @@ class LexerTest {
     }
 
     @Test
-    void slashToken() {
+    void slashToken() 
+    {
         List<Token> tokens = scan("/");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.SLASH, "/", null, 1);
@@ -105,7 +117,8 @@ class LexerTest {
     }
 
     @Test
-    void semicolonToken() {
+    void semicolonToken() 
+    {
         List<Token> tokens = scan(";");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.SEMICOLON, ";", null, 1);
@@ -113,7 +126,8 @@ class LexerTest {
     }
 
     @Test
-    void bangToken() {
+    void bangToken() 
+    {
         List<Token> tokens = scan("!");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.BANG, "!", null, 1);
@@ -121,7 +135,8 @@ class LexerTest {
     }
 
     @Test
-    void bangEqualToken() {
+    void bangEqualToken() 
+    {
         List<Token> tokens = scan("!=");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.BANG_EQUAL, "!=", null, 1);
@@ -129,7 +144,8 @@ class LexerTest {
     }
 
     @Test
-    void equalToken() {
+    void equalToken() 
+    {
         List<Token> tokens = scan("=");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.EQUAL, "=", null, 1);
@@ -137,7 +153,8 @@ class LexerTest {
     }
 
     @Test
-    void equalEqualToken() {
+    void equalEqualToken() 
+    {
         List<Token> tokens = scan("==");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.EQUAL_EQUAL, "==", null, 1);
@@ -145,7 +162,8 @@ class LexerTest {
     }
 
     @Test
-    void greaterToken() {
+    void greaterToken() 
+    {
         List<Token> tokens = scan(">");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.GREATER, ">", null, 1);
@@ -153,7 +171,8 @@ class LexerTest {
     }
 
     @Test
-    void greaterEqualToken() {
+    void greaterEqualToken() 
+    {
         List<Token> tokens = scan(">=");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.GREATER_EQUAL, ">=", null, 1);
@@ -161,7 +180,8 @@ class LexerTest {
     }
 
     @Test
-    void lessToken() {
+    void lessToken() 
+    {
         List<Token> tokens = scan("<");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.LESS, "<", null, 1);
@@ -169,7 +189,8 @@ class LexerTest {
     }
 
     @Test
-    void lessEqualToken() {
+    void lessEqualToken() 
+    {
         List<Token> tokens = scan("<=");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.LESS_EQUAL, "<=", null, 1);
@@ -177,7 +198,8 @@ class LexerTest {
     }
 
     @Test
-    void identifierToken() {
+    void identifierToken() 
+    {
         List<Token> tokens = scan("abc");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "abc", null, 1);
@@ -185,7 +207,8 @@ class LexerTest {
     }
 
     @Test
-    void stringToken() {
+    void stringToken() 
+    {
         List<Token> tokens = scan("\"abc\"");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.STRING, "\"abc\"", "abc", 1);
@@ -193,7 +216,8 @@ class LexerTest {
     }
 
     @Test
-    void numberToken() {
+    void numberToken() 
+    {
         List<Token> tokens = scan("12.34");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.NUMBER, "12.34", 12.34, 1);
@@ -201,7 +225,8 @@ class LexerTest {
     }
 
     @Test
-    void andToken() {
+    void andToken() 
+    {
         List<Token> tokens = scan("and");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.AND, "and", null, 1);
@@ -209,7 +234,8 @@ class LexerTest {
     }
 
     @Test
-    void elseToken() {
+    void elseToken() 
+    {
         List<Token> tokens = scan("else");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.ELSE, "else", null, 1);
@@ -217,7 +243,8 @@ class LexerTest {
     }
 
     @Test
-    void falseToken() {
+    void falseToken() 
+    {
         List<Token> tokens = scan("false");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.FALSE, "false", null, 1);
@@ -225,7 +252,8 @@ class LexerTest {
     }
 
     @Test
-    void forToken() {
+    void forToken() 
+    {
         List<Token> tokens = scan("for");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.FOR, "for", null, 1);
@@ -233,7 +261,8 @@ class LexerTest {
     }
 
     @Test
-    void funToken() {
+    void funToken() 
+    {
         List<Token> tokens = scan("fun");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.FUN, "fun", null, 1);
@@ -241,7 +270,8 @@ class LexerTest {
     }
 
     @Test
-    void ifToken() {
+    void ifToken() 
+    {
         List<Token> tokens = scan("if");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IF, "if", null, 1);
@@ -249,7 +279,8 @@ class LexerTest {
     }
 
     @Test
-    void nilToken() {
+    void nilToken() 
+    {
         List<Token> tokens = scan("nil");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.NIL, "nil", null, 1);
@@ -257,7 +288,8 @@ class LexerTest {
     }
 
     @Test
-    void orToken() {
+    void orToken() 
+    {
         List<Token> tokens = scan("or");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.OR, "or", null, 1);
@@ -265,7 +297,8 @@ class LexerTest {
     }
 
     @Test
-    void printToken() {
+    void printToken() 
+    {
         List<Token> tokens = scan("print");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.PRINT, "print", null, 1);
@@ -273,7 +306,8 @@ class LexerTest {
     }
 
     @Test
-    void returnToken() {
+    void returnToken() 
+    {
         List<Token> tokens = scan("return");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.RETURN, "return", null, 1);
@@ -281,7 +315,8 @@ class LexerTest {
     }
 
     @Test
-    void thisToken() {
+    void thisToken() 
+    {
         List<Token> tokens = scan("this");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.THIS, "this", null, 1);
@@ -289,7 +324,8 @@ class LexerTest {
     }
 
     @Test
-    void structToken() {
+    void structToken() 
+    {
         List<Token> tokens = scan("struct");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.STRUCT, "struct", null, 1);
@@ -297,7 +333,8 @@ class LexerTest {
     }
 
     @Test
-    void trueToken() {
+    void trueToken() 
+    {
         List<Token> tokens = scan("true");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.TRUE, "true", null, 1);
@@ -305,7 +342,8 @@ class LexerTest {
     }
 
     @Test
-    void varToken() {
+    void varToken() 
+    {
         List<Token> tokens = scan("var");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.VAR, "var", null, 1);
@@ -313,7 +351,8 @@ class LexerTest {
     }
 
     @Test
-    void whileToken() {
+    void whileToken() 
+    {
         List<Token> tokens = scan("while");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.WHILE, "while", null, 1);
@@ -321,21 +360,24 @@ class LexerTest {
     }
 
     @Test
-    void eofTokenOnEmptyInput() {
+    void eofTokenOnEmptyInput() 
+    {
         List<Token> tokens = scan("");
         assertEquals(1, tokens.size());
         assertToken(tokens.get(0), TokenType.EOF, "", null, 1);
     }
 
     @Test
-    void whitespaceOnlyInputProducesOnlyEof() {
+    void whitespaceOnlyInputProducesOnlyEof() 
+    {
         List<Token> tokens = scan("   \r\t\n  ");
         assertEquals(1, tokens.size());
         assertToken(tokens.get(0), TokenType.EOF, "", null, 2);
     }
 
     @Test
-    void identifiersThatContainKeywordsRemainIdentifiers() {
+    void identifiersThatContainKeywordsRemainIdentifiers() 
+    {
         List<Token> tokens = scan("anderson");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "anderson", null, 1);
@@ -343,7 +385,8 @@ class LexerTest {
     }
 
     @Test
-    void uppercaseKeywordLikeIdentifierRemainsIdentifier() {
+    void uppercaseKeywordLikeIdentifierRemainsIdentifier() 
+    {
         List<Token> tokens = scan("Print");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "Print", null, 1);
@@ -351,7 +394,8 @@ class LexerTest {
     }
 
     @Test
-    void identifierMayContainUnderscoreAfterFirstCharacter() {
+    void identifierMayContainUnderscoreAfterFirstCharacter() 
+    {
         List<Token> tokens = scan("abc_def");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "abc_def", null, 1);
@@ -359,7 +403,8 @@ class LexerTest {
     }
 
     @Test
-    void identifierMayContainDigitsAfterFirstCharacter() {
+    void identifierMayContainDigitsAfterFirstCharacter() 
+    {
         List<Token> tokens = scan("abc123");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "abc123", null, 1);
@@ -367,7 +412,8 @@ class LexerTest {
     }
 
     @Test
-    void commentsAndWhitespaceAreSkipped() {
+    void commentsAndWhitespaceAreSkipped() 
+    {
         List<Token> tokens = scan("var x = 1; # comment\nprint x;");
         assertEquals(9, tokens.size());
         assertToken(tokens.get(0), TokenType.VAR, "var", null, 1);
@@ -382,7 +428,8 @@ class LexerTest {
     }
 
     @Test
-    void commentAtEndOfFileWithoutTrailingNewlineIsSkipped() {
+    void commentAtEndOfFileWithoutTrailingNewlineIsSkipped() 
+    {
         List<Token> tokens = scan("print 1; # trailing comment");
         assertEquals(4, tokens.size());
         assertToken(tokens.get(0), TokenType.PRINT, "print", null, 1);
@@ -392,14 +439,16 @@ class LexerTest {
     }
 
     @Test
-    void commentOnlyInputProducesOnlyEof() {
+    void commentOnlyInputProducesOnlyEof() 
+    {
         List<Token> tokens = scan("# only comment");
         assertEquals(1, tokens.size());
         assertToken(tokens.get(0), TokenType.EOF, "", null, 1);
     }
 
     @Test
-    void commentThenNewlineTracksNextLineCorrectly() {
+    void commentThenNewlineTracksNextLineCorrectly() 
+    {
         List<Token> tokens = scan("# comment\nvar");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.VAR, "var", null, 2);
@@ -407,7 +456,8 @@ class LexerTest {
     }
 
     @Test
-    void hashInsideStringDoesNotStartComment() {
+    void hashInsideStringDoesNotStartComment() 
+    {
         List<Token> tokens = scan("\"# not a comment\"");
         assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.STRING, "\"# not a comment\"", "# not a comment", 1);
@@ -415,7 +465,8 @@ class LexerTest {
     }
 
     @Test
-    void slashSlashIsTwoSlashTokensNotAComment() {
+    void slashSlashIsTwoSlashTokensNotAComment() 
+    {
         List<Token> tokens = scan("//");
         assertEquals(3, tokens.size());
         assertToken(tokens.get(0), TokenType.SLASH, "/", null, 1);
@@ -424,7 +475,8 @@ class LexerTest {
     }
 
     @Test
-    void splitOperatorsWithWhitespaceStaySeparate() {
+    void splitOperatorsWithWhitespaceStaySeparate() 
+    {
         List<Token> tokens = scan("! = < >");
         assertEquals(5, tokens.size());
         assertToken(tokens.get(0), TokenType.BANG, "!", null, 1);
@@ -435,7 +487,8 @@ class LexerTest {
     }
 
     @Test
-    void numberFollowedByLettersSplitsIntoNumberAndIdentifier() {
+    void numberFollowedByLettersSplitsIntoNumberAndIdentifier() 
+    {
         List<Token> tokens = scan("1abc");
         assertEquals(3, tokens.size());
         assertToken(tokens.get(0), TokenType.NUMBER, "1", 1.0, 1);
@@ -444,7 +497,8 @@ class LexerTest {
     }
 
     @Test
-    void multilineInputTracksLineNumbers() {
+    void multilineInputTracksLineNumbers() 
+    {
         List<Token> tokens = scan("print 1;\nprint 2;\nprint 3;");
         assertEquals(10, tokens.size());
         assertToken(tokens.get(0), TokenType.PRINT, "print", null, 1);
@@ -460,7 +514,8 @@ class LexerTest {
     }
 
     @Test
-    void multilineStringAdvancesLineCounter() {
+    void multilineStringAdvancesLineCounter() 
+    {
         List<Token> tokens = scan("\"a\nb\"\nprint");
         assertEquals(3, tokens.size());
         assertToken(tokens.get(0), TokenType.STRING, "\"a\nb\"", "a\nb", 2);
@@ -469,7 +524,8 @@ class LexerTest {
     }
 
     @Test
-    void unterminatedStringReportsErrorAndStillEndsWithEof() {
+    void unterminatedStringReportsErrorAndStillEndsWithEof() 
+    {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -485,7 +541,8 @@ class LexerTest {
     }
 
     @Test
-    void unterminatedMultilineStringReportsFinalLineAndStillEndsWithEof() {
+    void unterminatedMultilineStringReportsFinalLineAndStillEndsWithEof() 
+    {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -501,7 +558,8 @@ class LexerTest {
     }
 
     @Test
-    void unexpectedCharacterReportsErrorAndScanningContinues() {
+    void unexpectedCharacterReportsErrorAndScanningContinues() 
+    {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -518,7 +576,8 @@ class LexerTest {
     }
 
     @Test
-    void underscoreCannotStartIdentifierInCurrentLexer() {
+    void underscoreCannotStartIdentifierInCurrentLexer() 
+    {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -535,7 +594,8 @@ class LexerTest {
     }
 
     @Test
-    void decimalEdgeCasesMatchCurrentImplementation() {
+    void decimalEdgeCasesMatchCurrentImplementation() 
+    {
         List<Token> tokens = scan("123. .5 1.2.3");
         assertEquals(8, tokens.size());
         assertToken(tokens.get(0), TokenType.NUMBER, "123", 123.0, 1);
@@ -549,7 +609,8 @@ class LexerTest {
     }
 
     @Test
-    void doubleCharacterOperatorMatchingIsGreedy() {
+    void doubleCharacterOperatorMatchingIsGreedy() 
+    {
         List<Token> tokens = scan("!==");
         assertEquals(3, tokens.size());
         assertToken(tokens.get(0), TokenType.BANG_EQUAL, "!=", null, 1);
@@ -558,7 +619,8 @@ class LexerTest {
     }
 
     @Test
-    void uppercaseLettersAreAcceptedInIdentifiers() {
+    void uppercaseLettersAreAcceptedInIdentifiers() 
+    {
         List<Token> tokens = scan("Camel");
         assertFalse(OurPL.hadError);
         assertEquals(2, tokens.size());
@@ -567,7 +629,8 @@ class LexerTest {
     }
 
     @Test
-    void complexProgramTokenization() {
+    void complexProgramTokenization() 
+    {
         List<Token> tokens = scan("var Name = 12;\nprint Name");
         assertEquals(8, tokens.size());
         assertToken(tokens.get(0), TokenType.VAR, "var", null, 1);

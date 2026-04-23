@@ -54,7 +54,8 @@ class ASTPrinter implements Expr.Visitor<String>{
     }
 
     @Override
-    public String visitCallExpr(Expr.Call expr) {
+    public String visitCallExpr(Expr.Call expr) 
+    {
         return parenthesize(expr.callee.toString(), expr.arguments.get(0));
     }
 }

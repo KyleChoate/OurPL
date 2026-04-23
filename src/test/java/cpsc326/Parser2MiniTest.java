@@ -21,16 +21,19 @@ class Parser2MiniTest {
         OurPL.hadRuntimeError = false;
     }
 
-    private List<Token> lex(String source) {
+    private List<Token> lex(String source) 
+    {
         return new Lexer(source).scanTokens();
     }
 
-    private List<Stmt> parse(String source) {
+    private List<Stmt> parse(String source) 
+    {
         OurPL.hadError = false;
         return new Parser(lex(source)).parse();
     }
 
-    private Stmt parseSingleStatement(String source) {
+    private Stmt parseSingleStatement(String source) 
+    {
         List<Stmt> statements = parse(source);
         assertNotNull(statements);
         assertEquals(1, statements.size());
@@ -38,7 +41,8 @@ class Parser2MiniTest {
         return statements.get(0);
     }
 
-    private ParseOutcome parseWithCapturedErr(String source) {
+    private ParseOutcome parseWithCapturedErr(String source) 
+    {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -49,7 +53,8 @@ class Parser2MiniTest {
         }
     }
 
-    private EvalOutcome interpret(String source) {
+    private EvalOutcome interpret(String source) 
+    {
         PrintStream originalOut = System.out;
         PrintStream originalErr = System.err;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -66,7 +71,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesVariableDeclarationWithInitializer() {
+    void parsesVariableDeclarationWithInitializer() 
+    {
         Stmt stmt = parseSingleStatement("var answer = 42;");
         assertTrue(stmt instanceof Stmt.Var);
 
@@ -77,7 +83,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesAssignmentExpression() {
+    void parsesAssignmentExpression() 
+    {
         Stmt stmt = parseSingleStatement("value = 3;");
         assertTrue(stmt instanceof Stmt.Expression);
 
@@ -91,7 +98,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesIfElseStatement() {
+    void parsesIfElseStatement() 
+    {
         Stmt stmt = parseSingleStatement("if (flag) print 1; else print 2;");
         assertTrue(stmt instanceof Stmt.If);
 
@@ -109,7 +117,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void bindsElseToNearestIf() {
+    void bindsElseToNearestIf() 
+    {
         Stmt stmt = parseSingleStatement("if (a) if (b) print 1; else print 2;");
         assertTrue(stmt instanceof Stmt.If);
 
@@ -135,7 +144,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesWhileStatement() {
+    void parsesWhileStatement() 
+    {
         Stmt stmt = parseSingleStatement("while (x < 3) print x;");
         assertTrue(stmt instanceof Stmt.While);
 
@@ -154,7 +164,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesForLoopIntoInitializerAndWhile() {
+    void parsesForLoopIntoInitializerAndWhile() 
+    {
         Stmt stmt = parseSingleStatement("for (var i = 0; i < 2; i = i + 1) print i;");
         assertTrue(stmt instanceof Stmt.Block);
 
@@ -198,7 +209,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parsesForLoopWithoutClausesAsInfiniteLoop() {
+    void parsesForLoopWithoutClausesAsInfiniteLoop() 
+    {
         Stmt stmt = parseSingleStatement("for (;; ) print 1;");
         assertTrue(stmt instanceof Stmt.While);
 
@@ -212,7 +224,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void reportsMissingSemicolonAfterVarDeclaration() {
+    void reportsMissingSemicolonAfterVarDeclaration() 
+    {
         ParseOutcome out = parseWithCapturedErr("var a = 1");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -220,7 +233,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void reportsMissingLeftParenAfterIf() {
+    void reportsMissingLeftParenAfterIf() 
+    {
         ParseOutcome out = parseWithCapturedErr("if true) print 1;");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -228,7 +242,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void reportsMissingSemicolonInsideForHeader() {
+    void reportsMissingSemicolonInsideForHeader() 
+    {
         ParseOutcome out = parseWithCapturedErr("for (var i = 0 i < 2; i = i + 1) print i;");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -236,7 +251,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void parserRecoversAfterBrokenDeclaration() {
+    void parserRecoversAfterBrokenDeclaration() 
+    {
         ParseOutcome out = parseWithCapturedErr("var x = ; print 2;");
         assertTrue(OurPL.hadError);
         assertEquals(2, out.statements.size());
@@ -245,7 +261,8 @@ class Parser2MiniTest {
     }
 
     @Test
-    void interpretsVariableAssignment() {
+    void interpretsVariableAssignment() 
+    {
         EvalOutcome out = interpret("var value = 1; value = value + 2; print value;");
         assertFalse(OurPL.hadError);
         assertFalse(OurPL.hadRuntimeError);
@@ -253,21 +270,24 @@ class Parser2MiniTest {
     }
 
     @Test
-    void interpretsForLoop() {
+    void interpretsForLoop() 
+    {
         EvalOutcome out = interpret("for (var i = 0; i < 3; i = i + 1) print i;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1\n2", out.stdout);
     }
 
     @Test
-    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() {
+    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() 
+    {
         EvalOutcome out = interpret("var i = 0; for (; i < 2; ) { print i; i = i + 1; }");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1", out.stdout);
     }
 
     @Test
-    void logicalOrShortCircuitsDuringInterpretation() {
+    void logicalOrShortCircuitsDuringInterpretation() 
+    {
         EvalOutcome out = interpret("var a = true; if (a or missing) print 1;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("1", out.stdout);
@@ -275,28 +295,33 @@ class Parser2MiniTest {
     }
 
     @Test
-    void logicalAndShortCircuitsDuringInterpretation() {
+    void logicalAndShortCircuitsDuringInterpretation() 
+    {
         EvalOutcome out = interpret("var a = false; if (a and missing) print 1; else print 2;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("2", out.stdout);
         assertTrue(out.stderr.isEmpty());
     }
 
-    private static final class ParseOutcome {
+    private static final class ParseOutcome 
+    {
         final List<Stmt> statements;
         final String stderr;
 
-        ParseOutcome(List<Stmt> statements, String stderr) {
+        ParseOutcome(List<Stmt> statements, String stderr) 
+        {
             this.statements = statements;
             this.stderr = stderr;
         }
     }
 
-    private static final class EvalOutcome {
+    private static final class EvalOutcome 
+    {
         final String stdout;
         final String stderr;
 
-        EvalOutcome(String stdout, String stderr) {
+        EvalOutcome(String stdout, String stderr) 
+        {
             this.stdout = stdout;
             this.stderr = stderr;
         }
