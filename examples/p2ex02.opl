@@ -1,0 +1,8 @@
+var ideal_gpa = 4.0;
+var my_gpa = 3.89;
+var annoying_gap = ideal_gpa - my_gpa; # should never be negative
+if (annoying_gap == 0) {
+    print "Congratulations";
+} else {
+    print "Good enough";
+}

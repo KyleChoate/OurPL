@@ -561,7 +561,7 @@ class LexerTest {
     void uppercaseLettersAreAcceptedInIdentifiers() {
         List<Token> tokens = scan("Camel");
         assertFalse(OurPL.hadError);
-        // assertEquals(2, tokens.size());
+        assertEquals(2, tokens.size());
         assertToken(tokens.get(0), TokenType.IDENTIFIER, "Camel", null, 1);
         assertToken(tokens.get(1), TokenType.EOF, "", null, 1);
     }

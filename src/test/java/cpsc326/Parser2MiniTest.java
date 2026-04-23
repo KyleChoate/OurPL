@@ -13,11 +13,10 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ParserTest2 
-{
+class Parser2MiniTest {
+
     @BeforeEach
-    void resetFlags() 
-    {
+    void resetFlags() {
         OurPL.hadError = false;
         OurPL.hadRuntimeError = false;
     }
@@ -31,8 +30,7 @@ class ParserTest2
         return new Parser(lex(source)).parse();
     }
 
-    private Stmt parseSingleStatement(String source) 
-    {
+    private Stmt parseSingleStatement(String source) {
         List<Stmt> statements = parse(source);
         assertNotNull(statements);
         assertEquals(1, statements.size());
@@ -40,8 +38,7 @@ class ParserTest2
         return statements.get(0);
     }
 
-    private ParseOutcome parseWithCapturedErr(String source) 
-    {
+    private ParseOutcome parseWithCapturedErr(String source) {
         PrintStream originalErr = System.err;
         ByteArrayOutputStream err = new ByteArrayOutputStream();
         System.setErr(new PrintStream(err));
@@ -52,8 +49,7 @@ class ParserTest2
         }
     }
 
-    private EvalOutcome interpret(String source) 
-    {
+    private EvalOutcome interpret(String source) {
         PrintStream originalOut = System.out;
         PrintStream originalErr = System.err;
         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -62,13 +58,7 @@ class ParserTest2
         System.setErr(new PrintStream(err));
         try {
             new Interpreter().interpret(parse(source));
-            // Removes \r from windows newline
-            return new EvalOutcome
-            (
-                out.toString().replace("\r", "").trim(),
-                err.toString().replace("\r", "").trim()
-            );
-            // return new EvalOutcome(out.toString().trim(), err.toString().trim());
+            return new EvalOutcome(out.toString().trim(), err.toString().trim());
         } finally {
             System.setOut(originalOut);
             System.setErr(originalErr);
@@ -79,6 +69,7 @@ class ParserTest2
     void parsesVariableDeclarationWithInitializer() {
         Stmt stmt = parseSingleStatement("var answer = 42;");
         assertTrue(stmt instanceof Stmt.Var);
+
         Stmt.Var varStmt = (Stmt.Var) stmt;
         assertEquals("answer", varStmt.name.lexeme);
         assertTrue(varStmt.initializer instanceof Expr.Literal);
@@ -100,8 +91,7 @@ class ParserTest2
     }
 
     @Test
-    void parsesIfElseStatement() 
-    {
+    void parsesIfElseStatement() {
         Stmt stmt = parseSingleStatement("if (flag) print 1; else print 2;");
         assertTrue(stmt instanceof Stmt.If);
 
@@ -119,8 +109,7 @@ class ParserTest2
     }
 
     @Test
-    void bindsElseToNearestIf() 
-    {
+    void bindsElseToNearestIf() {
         Stmt stmt = parseSingleStatement("if (a) if (b) print 1; else print 2;");
         assertTrue(stmt instanceof Stmt.If);
 
@@ -146,8 +135,7 @@ class ParserTest2
     }
 
     @Test
-    void parsesWhileStatement() 
-    {
+    void parsesWhileStatement() {
         Stmt stmt = parseSingleStatement("while (x < 3) print x;");
         assertTrue(stmt instanceof Stmt.While);
 
@@ -166,8 +154,7 @@ class ParserTest2
     }
 
     @Test
-    void parsesForLoopIntoInitializerAndWhile() 
-    {
+    void parsesForLoopIntoInitializerAndWhile() {
         Stmt stmt = parseSingleStatement("for (var i = 0; i < 2; i = i + 1) print i;");
         assertTrue(stmt instanceof Stmt.Block);
 
@@ -225,8 +212,7 @@ class ParserTest2
     }
 
     @Test
-    void reportsMissingSemicolonAfterVarDeclaration() 
-    {
+    void reportsMissingSemicolonAfterVarDeclaration() {
         ParseOutcome out = parseWithCapturedErr("var a = 1");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -267,15 +253,6 @@ class ParserTest2
     }
 
     @Test
-    void rawLoopTest()
-    {
-        String source = "var i = 0; for (; i < 2; ) { print i; i = i + 1; }";
-        new Interpreter().interpret(parse(source));
-        assertFalse(OurPL.hadRuntimeError);
-    }
-
-
-    @Test
     void interpretsForLoop() {
         EvalOutcome out = interpret("for (var i = 0; i < 3; i = i + 1) print i;");
         assertFalse(OurPL.hadRuntimeError);
@@ -283,16 +260,14 @@ class ParserTest2
     }
 
     @Test
-    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() 
-    {
+    void interpretsForLoopWithoutIncrementWhenBodyUpdatesVariable() {
         EvalOutcome out = interpret("var i = 0; for (; i < 2; ) { print i; i = i + 1; }");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1", out.stdout);
     }
 
     @Test
-    void logicalOrShortCircuitsDuringInterpretation() 
-    {
+    void logicalOrShortCircuitsDuringInterpretation() {
         EvalOutcome out = interpret("var a = true; if (a or missing) print 1;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("1", out.stdout);
@@ -302,7 +277,6 @@ class ParserTest2
     @Test
     void logicalAndShortCircuitsDuringInterpretation() {
         EvalOutcome out = interpret("var a = false; if (a and missing) print 1; else print 2;");
-        // EvalOutcome out = interpret("var a = false; if (a and missing) print 1; else print 2;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("2", out.stdout);
         assertTrue(out.stderr.isEmpty());
@@ -318,7 +292,6 @@ class ParserTest2
         }
     }
 
-    
     private static final class EvalOutcome {
         final String stdout;
         final String stderr;

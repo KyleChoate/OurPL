@@ -11,8 +11,7 @@ import java.util.List;
 public class OurPL {
     
     public static void main(String[] args) throws IOException {
-        if (args.length > 1) 
-        {
+        if (args.length > 1) {
             System.out.println("Usage: OurPl [script]");
             System.exit(64);
         }
@@ -28,13 +27,14 @@ public class OurPL {
         run(new String(bytes, Charset.defaultCharset()));
 
         if (hadError) System.exit(65);
+        if (hadRuntimeError) System.exit(70);
     }
 
+    private static final Interpreter interpreter = new Interpreter();
     static boolean hadError = false;
     static boolean hadRuntimeError = false;
 
-    public static void runPrompt() throws IOException 
-    {
+    public static void runPrompt() throws IOException {
         InputStreamReader input = new InputStreamReader(System.in);
         BufferedReader reader = new BufferedReader(input);
 
@@ -49,16 +49,22 @@ public class OurPL {
         }
     }
 
-    public static void run(String source) 
-    {
+    public static void run(String source) {
         Lexer lexer = new Lexer(source);
         List<Token> tokens = lexer.scanTokens();
 
-        Parser parser = new Parser(tokens);
+        // for (Token token : tokens){
+        //     System.out.println(token);
+        // }
 
-        for (Token token : tokens){
-            System.out.println(token);
-        }
+        Parser parser = new Parser(tokens);
+        List<Stmt> statements = parser.parse();
+
+        if (hadError) return;
+
+        // System.out.println(new ASTPrinter().print(expression));
+        interpreter.interpret(statements);
+        
     }
 
     static void error(int line, String message) {
@@ -70,11 +76,16 @@ public class OurPL {
         hadError = true;
     }
 
+    static void error(Token token, String message) {
+        if(token.type == TokenType.EOF){
+            report(token.line, " at end", message);
+        } else {
+            report(token.line, " at '" + token.lexeme + "'", message);
+        }
+    }
 
-    public static void runtimeError(RuntimeError error)
-    {
+    static void runtimeError(RuntimeError error) {
+        System.err.println(error.getMessage() + "\n[line " + error.token.line + "]");
         hadRuntimeError = true;
-        report(error.token.line, "", error.getMessage());
-        // System.err.println("Error: " + error.getMessage() + " at token " + error.token);
     }
 }

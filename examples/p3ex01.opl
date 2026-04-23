@@ -1,0 +1,10 @@
+fun pow (a, b) {
+    var acc = 1;
+    for (var count = 0; count < b; count = count + 1) {
+        acc = acc * a;
+    }
+    return acc;
+}
+
+print pow(2, 8);
+print pow;

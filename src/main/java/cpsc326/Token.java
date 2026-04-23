@@ -1,7 +1,6 @@
 package cpsc326;
 
-class Token 
-{
+class Token {
     final TokenType type;
     final String lexeme;
     final Object literal;
@@ -14,12 +13,10 @@ class Token
         this.line = line;
     }
 
-    public String toString() 
-    {
-        if (literal == null) 
+    public String toString() {
+        if (literal == null) {
             return type + " " + lexeme;
-        
+        }
         return type + " " + lexeme + " " + literal;
     }
-
 }
