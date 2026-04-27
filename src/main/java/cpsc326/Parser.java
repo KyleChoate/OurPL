@@ -52,8 +52,13 @@ class Parser {
     private Stmt.Function function()
     {
         Token name = consume(IDENTIFIER, "Expected function identifier");
-        
-        return null;
+
+        consume(LEFT_PAREN, "Expected '(' after function identifier");
+
+        List<Token> parameters = parameters();
+        List<Stmt> body = block();
+
+        return new Stmt.Function(name, parameters, body);
     }
 
     private Stmt varDeclaration() {
@@ -309,7 +314,20 @@ class Parser {
 
     private List<Token> parameters()
     {
-        return null;
+        List<Token> parameters = new ArrayList<>();
+
+        // If empty, return empty list
+        if (match(RIGHT_PAREN))
+            return parameters;
+
+        // Otherwise, add an argument and repeatedly do so until out of commas
+        do
+        {
+            Token tmp = consume(IDENTIFIER, "Expected identifier");
+            parameters.add(tmp);
+        } while (match(COMMA));
+
+        return parameters;
     }
 
     private Expr primary() {
