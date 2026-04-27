@@ -301,7 +301,7 @@ class Parser {
         if (match(RIGHT_PAREN))
             return arguments;
 
-        // Otherwise, add an argument and repeatedly do so until out of commas
+        // Otherwise, add an argument and do-while until no more commas
         do
         {
             arguments.add(expression());
@@ -320,7 +320,7 @@ class Parser {
         if (match(RIGHT_PAREN))
             return parameters;
 
-        // Otherwise, add an argument and repeatedly do so until out of commas
+        // Otherwise, add an argument and do-while until no more commas
         do
         {
             Token tmp = consume(IDENTIFIER, "Expected identifier");
