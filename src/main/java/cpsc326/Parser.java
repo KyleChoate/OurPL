@@ -51,7 +51,7 @@ class Parser {
 
     private Stmt.Function function()
     {
-        Token name = consume(IDENTIFIER, "Expected function identifieier");
+        Token name = consume(IDENTIFIER, "Expected function identifier");
         
         return null;
     }
@@ -267,15 +267,47 @@ class Parser {
             return new Expr.Unary(operator, right);
         }
 
-        return primary();
+        return call();
     }
 
     private Expr call() 
     {
-        return null;
+        Expr expr = primary();
+        
+        while (match(LEFT_PAREN))
+        {
+            expr = finishCall(expr);
+        }
+
+        return expr;
     }
 
-    private Expr finishCall(Expr callee) 
+    private Expr finishCall(Expr callee)
+    {
+        List<Expr> arguments = arguments();
+        return new Expr.Call(callee, arguments);
+    }
+
+    private List<Expr> arguments()
+    {
+        List<Expr> arguments = new ArrayList<>();
+
+        // If empty, return empty list
+        if (match(RIGHT_PAREN))
+            return arguments;
+
+        // Otherwise, add an argument and repeatedly do so until out of commas
+        do
+        {
+            arguments.add(expression());
+        } while (match(COMMA));
+
+        consume(RIGHT_PAREN, "Expected ')' after function arguments"); 
+
+        return arguments;
+    }
+
+    private List<Token> parameters()
     {
         return null;
     }
