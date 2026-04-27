@@ -1,7 +1,6 @@
 package cpsc326;
 
 import java.util.List;
-import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 {
@@ -156,6 +155,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
                 return -(double)right;
             case BANG:
                 return !isTruthy(right);
+            default:
         }
 
         return null;
@@ -215,7 +215,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
             case STAR:
                 checkNumberOperands(expr.operator, left, right);
                 return (double)left * (double)right;
-            
+            default:
         }
 
         return null;

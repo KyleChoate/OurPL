@@ -390,6 +390,7 @@ class Parser {
                 case VAR:
                 case WHILE:
                     return;
+                default:
             }
             
             advance();
