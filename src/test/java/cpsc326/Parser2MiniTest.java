@@ -317,9 +317,9 @@ class Parser2MiniTest {
     }
 
     @Test
-    void rawFunCall()
+    void rawInputTest()
     {
-        String source = "fun test() {for (var i = 0; i < 10 ; i = i + 1) {print i;} } test();";
+        String source = "fun test() {return 1;} var a = test(); print a;";
         new Interpreter().interpret(parse(source));
     }
 
@@ -331,6 +331,26 @@ class Parser2MiniTest {
         EvalOutcome out = interpret(source);
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1\n2\n3\n4\n5\n6\n7\n8\n9", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
+
+    @Test
+    void returnValueFromFunction1() 
+    {
+        String source = "fun test() {return 1;} var a = test(); print a;";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("1", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
+
+    @Test
+    void returnValueFromFunction2() 
+    {
+        String source = "fun test(){var a = 100;var b = 10;return a / b;} var a = test() / 2; print a + 2;";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("7", out.stdout);
         assertTrue(out.stderr.isEmpty());
     }
 
