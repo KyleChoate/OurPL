@@ -13,6 +13,8 @@ class Parser {
 
     private final List<Token> tokens;
     private int current = 0;
+    private static final int MAX_ARG_SIZE = 255;
+
 
     Parser(List<Token> tokens) 
     {
@@ -87,6 +89,11 @@ class Parser {
         if(match(FOR)) {
             return forStatement();
         }
+
+        if(match(RETURN)) {
+            return returnStatement();
+        }
+
         return expressionStatement();
     }
 
@@ -289,7 +296,8 @@ class Parser {
 
     private Expr finishCall(Expr callee)
     {
-        List<Expr> arguments = arguments();
+        List<Expr> arguments = arguments();            
+
         return new Expr.Call(callee, arguments);
     }
 
@@ -301,10 +309,16 @@ class Parser {
         if (match(RIGHT_PAREN))
             return arguments;
 
+        int arg_count = 0;
+
         // Otherwise, add an argument and do-while until no more commas
         do
         {
             arguments.add(expression());
+            // If too large, throw error
+            if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
+                error(previous(), "Argument size is too large for call");
+
         } while (match(COMMA));
 
         consume(RIGHT_PAREN, "Expected ')' after function arguments"); 
@@ -315,6 +329,7 @@ class Parser {
     private List<Token> parameters()
     {
         List<Token> parameters = new ArrayList<>();
+        int arg_count = 0;
 
         // If empty, return empty list
         if (match(RIGHT_PAREN))
@@ -325,6 +340,10 @@ class Parser {
         {
             Token tmp = consume(IDENTIFIER, "Expected identifier");
             parameters.add(tmp);
+            if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
+                error(previous(), "Argument size is too large for call");
+                break;
+                
         } while (match(COMMA));
 
         return parameters;

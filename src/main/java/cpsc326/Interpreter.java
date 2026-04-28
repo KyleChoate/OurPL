@@ -4,11 +4,23 @@ import java.util.List;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 {
-    private Environment environment = new Environment();
+    private Environment globals = new Environment();
+    private Environment environment = new Environment(globals);
 
     Interpreter() 
     {
-        // Constructor
+        // Adds to globals hashmap a clock function
+        // This clock function overrides arity with 0
+        globals.define("clock", new OurPLCallable() 
+        {
+            @Override
+            public int arity() {return 0;};
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments) {return (System.currentTimeMillis()/1000);};
+
+            public String toString;
+        });
     }
 
     void interpret(List<Stmt> statements) 
@@ -304,6 +316,62 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Void visitFunctionStmt(Stmt.Function stmt) 
     {
+        // Goal:    Add function to environment's hashmap
+        
+        // Arity is the num of parameters of a function
+        int arity = stmt.params.size();
+        List<Token> params = stmt.params;
+        List<Stmt> statements = stmt.body;
+
+        
+
+        environment.define(stmt.name.toString(), new OurPLCallable() 
+        {
+            @Override
+            public int arity() {return arity;};
+
+            @Override
+            public Object call(Interpreter interpreter, List<Object> arguments)
+            {
+                Return ret = null;
+                Environment previous = interpreter.environment;
+                try 
+                {
+                    // Creates a new environment with only globals as
+                    // enclosing, so that the function can use globals
+                    environment = new Environment(globals);
+
+                    // If invalid match-up
+                    if (arguments.size() != arity())
+                        throw new RuntimeError(params.get(0),"Invalid number of arguments, expected " + arity());
+
+                    // Assign parameters in the new environment
+                    for (int i = 0 ; i < arguments.size() ; i++)
+                    {
+                        environment.assign(params.get(0), arguments.get(i));
+                    }
+
+                    // Execute block, but return
+                    for (Stmt statement : statements) 
+                        execute(statement);
+                        
+                } 
+                finally 
+                {
+                    environment = previous;
+                }
+
+                // Environment environment = new Environment();
+                // for (Object argument: arguments)
+                //     environment.define()
+                // executeBlock(body, );
+                int tmp = 0;
+                ret = new Return(tmp);
+                return ret;
+                
+            };
+        });
+
         return null;
     }
 
