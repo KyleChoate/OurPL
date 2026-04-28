@@ -351,9 +351,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         environment.define(stmt.name.lexeme, new OurPLFunction(stmt) 
         {
             @Override
-            public int arity() {return arity;};
-
-            @Override
             public Object call(Interpreter interpreter, List<Object> arguments)
             {
                 Environment previous = interpreter.environment;

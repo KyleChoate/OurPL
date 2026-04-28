@@ -20,7 +20,7 @@ class OurPLFunction implements OurPLCallable
     @Override
     public int arity() 
     {
-        return 0;
+        return declaration.params.size();
     }
 
     @Override
