@@ -323,8 +323,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         List<Token> params = stmt.params;
         List<Stmt> statements = stmt.body;
 
-        
-
         environment.define(stmt.name.toString(), new OurPLCallable() 
         {
             @Override
@@ -333,15 +331,15 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments)
             {
-                Return ret = null;
                 Environment previous = interpreter.environment;
                 try 
                 {
                     // Creates a new environment with only globals as
                     // enclosing, so that the function can use globals
+                    // without having access to other environments
                     environment = new Environment(globals);
 
-                    // If invalid match-up
+                    // If invalid match-up, throw error
                     if (arguments.size() != arity())
                         throw new RuntimeError(params.get(0),"Invalid number of arguments, expected " + arity());
 
@@ -351,28 +349,34 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
                         environment.assign(params.get(0), arguments.get(i));
                     }
 
-                    // Execute block, but return
+                    // Execute block, although it will throw a Return if
+                    // an executed statement is a ReturnStmt
                     for (Stmt statement : statements) 
                         execute(statement);
-                        
-                } 
+                }
+                // If a Return Statement is thrown, then catch and return its value
+                catch (Return ret)
+                {
+                    // Catch a Return object and return its value
+                    return ret.value;
+                }
                 finally 
                 {
                     environment = previous;
                 }
-
-                // Environment environment = new Environment();
-                // for (Object argument: arguments)
-                //     environment.define()
-                // executeBlock(body, );
-                int tmp = 0;
-                ret = new Return(tmp);
-                return ret;
-                
+                // If there is no return, return nil
+                return new Expr.Literal(null);
             };
         });
 
         return null;
+    }
+
+    // Return
+    @Override
+    public Void visitReturnStmt(Stmt.Return stmt) 
+    {
+        throw new Return(stmt.expression);
     }
 
     // While

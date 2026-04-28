@@ -97,6 +97,19 @@ class Parser {
         return expressionStatement();
     }
 
+    private Stmt returnStatement() {
+        Expr value;
+        if (match(SEMICOLON))
+            value = new Expr.Literal(null);
+        else
+        {
+            value = expression();
+            consume(SEMICOLON, "Expected ';' after value");
+        }
+
+        return new Stmt.Return(value);
+    }
+
     private Stmt printStatement() {
         Expr value = expression();
         consume(SEMICOLON, "Expected ';' after value");
