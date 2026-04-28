@@ -2,8 +2,6 @@ package cpsc326;
 
 import java.util.List;
 
-import static cpsc326.TokenType.LEFT_BRACE;
-
 import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
