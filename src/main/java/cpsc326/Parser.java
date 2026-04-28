@@ -305,18 +305,19 @@ class Parser {
     private Expr call() 
     {
         Expr expr = primary();
-        
-        while (match(LEFT_PAREN))
-        {
-            expr = finishCall(expr);
-        }
+
+        if (previous().type == IDENTIFIER)
+            while (match(LEFT_PAREN))
+            {
+                expr = finishCall(expr);
+            }
 
         return expr;
     }
 
     private Expr finishCall(Expr callee)
     {
-        List<Expr> arguments = arguments();            
+        List<Expr> arguments = arguments();
         return new Expr.Call(callee, previous(), arguments);
     }
 

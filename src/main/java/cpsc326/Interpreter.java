@@ -1,6 +1,9 @@
 package cpsc326;
 
 import java.util.List;
+
+import static cpsc326.TokenType.LEFT_BRACE;
+
 import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
@@ -19,8 +22,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments) {return (System.currentTimeMillis()/1000);};
-
-            public String toString;
         });
     }
 
@@ -191,25 +192,25 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Object visitCallExpr(Expr.Call expr) 
     {
-        Expr tmp = (expr.callee);
-        Token identifier = ((Expr.Variable)tmp).name;
-        Object fun = environment.get(identifier);
+        Object callee = evaluate(expr.callee);
 
-        OurPLCallable function = ((OurPLCallable)fun);
+        if (!(callee instanceof OurPLCallable)) 
+            throw new RuntimeError(expr.paren, "Invalid");
+        
 
-        List<Expr> argument_expressions = expr.arguments;
+        OurPLCallable function = (OurPLCallable) callee;
 
         List<Object> arguments = new ArrayList<>();
-
-        for (Expr expression: argument_expressions)
+        for (Expr argument : expr.arguments) 
         {
-            arguments.add(evaluate(expression));
-            if ( arguments.size() > function.arity())
-                throw new RuntimeError(identifier, "Invalid number of parameters");
-        }            
+            arguments.add(evaluate(argument));
+        }
+
+        if (arguments.size() != function.arity()) 
+            throw new RuntimeError(expr.paren, "Invalid number of parameters");
+        
 
         return function.call(this, arguments);
-
     }
 
     // Binary

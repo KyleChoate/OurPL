@@ -21,7 +21,10 @@ public class DebugTool
     @Test
     void rawRecursiveTest()
     {
-        String source = "fun mod(a, b){if (a < 0) return false;if (a == 0) return true;return (mod(a-b, b));}fun threeOrFivesBelow(n){if (n <= 0) return 0;if (mod(n-1, 3)) return n-1 + threeOrFivesBelow(n-1);if (mod(n-1, 5)) return n-1 + threeOrFivesBelow(n-1);return threeOrFivesBelow(n-1);}print threeOrFivesBelow(10);";
+        String source = 
+        "fun identity(f) { return f; } " +
+        "fun add(a, b) { return a + b; } " +
+        "print identity(add)(2, 3);";
         new Interpreter().interpret(parse(source));
     }
 }

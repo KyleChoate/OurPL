@@ -50,7 +50,7 @@ class OurPLFunction implements OurPLCallable
             interpreter.environment = previous;
         }
         // If there is no return, return nil
-        return new Expr.Literal(null);
+        return null;
     }
 
     @Override
