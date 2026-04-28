@@ -317,7 +317,7 @@ class Parser {
     private Expr finishCall(Expr callee)
     {
         List<Expr> arguments = arguments();            
-        return new Expr.Call(callee, arguments);
+        return new Expr.Call(callee, previous(), arguments);
     }
 
     private List<Expr> arguments()
@@ -357,13 +357,18 @@ class Parser {
         // Otherwise, add an argument and do-while until no more commas
         do
         {
+            // System.out.println("Iterating loop");
             Token tmp = consume(IDENTIFIER, "Expected identifier");
             parameters.add(tmp);
+            // System.out.println("Adding identifier: " + tmp.lexeme + " next one is: " + peek().lexeme);
             if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
+            {
                 error(previous(), "Argument size is too large for call");
                 break;
-                
+            }
         } while (match(COMMA));
+
+        consume(RIGHT_PAREN, "Expected ')' after function parameters"); 
 
         return parameters;
     }

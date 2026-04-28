@@ -149,11 +149,11 @@ abstract class Expr
 
     static class Call extends Expr 
     {
-        Call(Expr callee, List<Expr> arguments) 
+        Call(Expr callee, Token paren, List<Expr> arguments) 
         {
             this.callee = callee;
             this.arguments = arguments;
-            // this.paren = paren;
+            this.paren = paren;
         }
 
         @Override
@@ -161,7 +161,7 @@ abstract class Expr
         {
             return visitor.visitCallExpr(this);
         }
-        // final Token paren;
+        final Token paren;
         final Expr callee;
         final List<Expr> arguments;
     }

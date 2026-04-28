@@ -5,8 +5,8 @@ import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 {
-    private Environment globals = new Environment();
-    private Environment environment = new Environment(globals);
+    public Environment globals = new Environment();
+    public Environment environment = new Environment(globals);
 
     Interpreter() 
     {
@@ -195,7 +195,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         Token identifier = ((Expr.Variable)tmp).name;
         Object fun = environment.get(identifier);
 
-        OurPLFunction function = ((OurPLFunction)fun);
+        OurPLCallable function = ((OurPLCallable)fun);
 
         List<Expr> argument_expressions = expr.arguments;
 
@@ -342,55 +342,8 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     public Void visitFunctionStmt(Stmt.Function stmt) 
     {
         // Goal:    Add function to environment's hashmap
-        
-        // Arity is the num of parameters of a function
-        int arity = stmt.params.size();
-        List<Token> params = stmt.params;
-        List<Stmt> statements = stmt.body;
-
-        environment.define(stmt.name.lexeme, new OurPLFunction(stmt) 
-        {
-            @Override
-            public Object call(Interpreter interpreter, List<Object> arguments)
-            {
-                Environment previous = interpreter.environment;
-                try 
-                {
-                    // Creates a new environment with only globals as
-                    // enclosing, so that the function can use globals
-                    // without having access to other environments
-                    environment = new Environment(globals);
-
-                    // If invalid match-up, throw error
-                    if (arguments.size() != arity())
-                        throw new RuntimeError(params.get(0),"Invalid number of arguments, expected " + arity());
-
-                    // Assign parameters in the new environment
-                    for (int i = 0 ; i < arguments.size() ; i++)
-                    {
-                        environment.assign(params.get(0), arguments.get(i));
-                    }
-
-                    // Execute block, although it will throw a Return if
-                    // an executed statement is a ReturnStmt
-                    for (Stmt statement : statements) 
-                        execute(statement);
-                }
-                // If a Return Statement is thrown, then catch and return its value
-                catch (Return ret)
-                {
-                    // Catch a Return object and return its value
-                    return ret.value;
-                }
-                finally 
-                {
-                    environment = previous;
-                }
-                // If there is no return, return nil
-                return new Expr.Literal(null);
-            };
-        });
-
+        globals.define(stmt.name.lexeme, new OurPLFunction(stmt));
+        // System.out.println("Defined a function: " + stmt.name.lexeme);
         return null;
     }
 
