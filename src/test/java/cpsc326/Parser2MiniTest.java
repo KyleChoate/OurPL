@@ -63,7 +63,13 @@ class Parser2MiniTest {
         System.setErr(new PrintStream(err));
         try {
             new Interpreter().interpret(parse(source));
-            return new EvalOutcome(out.toString().trim(), err.toString().trim());
+            // Removes \r from windows newline
+            return new EvalOutcome
+            (
+                out.toString().replace("\r", "").trim(),
+                err.toString().replace("\r", "").trim()
+            );
+            // return new EvalOutcome(out.toString().trim(), err.toString().trim());
         } finally {
             System.setOut(originalOut);
             System.setErr(originalErr);
@@ -317,6 +323,16 @@ class Parser2MiniTest {
         new Interpreter().interpret(parse(source));
     }
 
+    @Test
+    void declareFunction() 
+    {
+        String source = 
+        "fun test() {for (var i = 0; i < 10 ; i = i + 1) {print i;} } test();";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("0\n1\n2\n3\n4\n5\n6\n7\n8\n9", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
 
     private static final class ParseOutcome 
     {
