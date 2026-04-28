@@ -303,6 +303,21 @@ class Parser2MiniTest {
         assertTrue(out.stderr.isEmpty());
     }
 
+    @Test
+    void rawFunDeclaration()
+    {
+        String source = "fun test() {print 1; } ";
+        new Interpreter().interpret(parse(source));
+    }
+
+    @Test
+    void rawFunCall()
+    {
+        String source = "fun test() {for (var i = 0; i < 10 ; i = i + 1) {print i;} } test();";
+        new Interpreter().interpret(parse(source));
+    }
+
+
     private static final class ParseOutcome 
     {
         final List<Stmt> statements;

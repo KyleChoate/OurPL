@@ -58,6 +58,8 @@ class Parser {
         consume(LEFT_PAREN, "Expected '(' after function identifier");
 
         List<Token> parameters = parameters();
+        System.out.println("Reading function block");
+        consume(LEFT_BRACE, "Expected '{' after function declaration");
         List<Stmt> body = block();
 
         return new Stmt.Function(name, parameters, body);
@@ -74,6 +76,7 @@ class Parser {
     }
 
     private Stmt statement() {
+        System.out.println("Starting statement()");
         if(match(PRINT)) {
             return printStatement();
         }
@@ -117,11 +120,12 @@ class Parser {
     }
 
     private List<Stmt> block() {
+        System.out.println("Starting block()");
         List<Stmt> statements = new ArrayList<>();
         while (!check(RIGHT_BRACE) && !isAtEnd()) {
             statements.add(declaration());
         }
-
+        System.out.println("Peeking: " + peek().toString());
         consume(RIGHT_BRACE, "Expect '}' after block;");
         return statements;
     }
@@ -310,7 +314,6 @@ class Parser {
     private Expr finishCall(Expr callee)
     {
         List<Expr> arguments = arguments();            
-
         return new Expr.Call(callee, arguments);
     }
 

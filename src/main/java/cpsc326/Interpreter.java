@@ -1,6 +1,7 @@
 package cpsc326;
 
 import java.util.List;
+import java.util.ArrayList;
 
 class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 {
@@ -184,7 +185,23 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Object visitCallExpr(Expr.Call expr) 
     {
-        return null;
+        Expr tmp = (expr.callee);
+        Token identifier = ((Expr.Variable)tmp).name;
+        Object fun = environment.get(identifier);
+
+        OurPLFunction function = ((OurPLFunction)fun);
+
+        List<Expr> argument_expressions = expr.arguments;
+
+        List<Object> arguments = new ArrayList<>();
+
+        for (Expr expression: argument_expressions)
+        {
+            arguments.add(evaluate(expression));
+        }
+
+        return function.call(this, arguments);
+
     }
 
     // Binary
@@ -323,7 +340,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         List<Token> params = stmt.params;
         List<Stmt> statements = stmt.body;
 
-        environment.define(stmt.name.toString(), new OurPLCallable() 
+        System.out.println("Adding function: " + stmt.name.lexeme);
+
+        environment.define(stmt.name.lexeme, new OurPLFunction(stmt) 
         {
             @Override
             public int arity() {return arity;};
@@ -331,6 +350,7 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments)
             {
+                System.out.println("EXECUTING FUNCTION");
                 Environment previous = interpreter.environment;
                 try 
                 {
