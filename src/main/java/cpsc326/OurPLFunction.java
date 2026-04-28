@@ -23,7 +23,6 @@ class OurPLFunction implements OurPLCallable
             interpreter.environment = new Environment(interpreter.globals);
 
             // System.out.println("Calling function: " + declaration.name.lexeme);
-            // interpreter.environment.define(declaration.name.lexeme, new OurPLFunction(declaration));
 
             // If invalid match-up, throw error
             if (arguments.size() != arity())

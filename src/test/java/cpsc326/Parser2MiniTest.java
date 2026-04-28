@@ -310,20 +310,6 @@ class Parser2MiniTest {
     }
 
     @Test
-    void rawFunDeclaration()
-    {
-        String source = "fun test() {return 1; } print test();";
-        new Interpreter().interpret(parse(source));
-    }
-
-    @Test
-    void rawRecursiveTest()
-    {
-        String source = "fun mod(a, b){if (a < 0) return false;if (a == 0) return true;return (mod(a-b, b));}fun threeOrFivesBelow(n){if (n <= 0) return 0;if (mod(n-1, 3)) return n-1 + threeOrFivesBelow(n-1);if (mod(n-1, 5)) return n-1 + threeOrFivesBelow(n-1);return threeOrFivesBelow(n-1);}print threeOrFivesBelow(10);";
-        new Interpreter().interpret(parse(source));
-    }
-
-    @Test
     void declareFunction() 
     {
         String source = 
@@ -363,6 +349,16 @@ class Parser2MiniTest {
         assertEquals("2", out.stdout);
         assertTrue(out.stderr.isEmpty());
     } // String source = "fun test(b) {return b * 2;} var a = test();";
+
+    @Test
+    void threeOrFivesBelow()
+    {
+        String source = "fun mod(a, b){if (a < 0) return false;if (a == 0) return true;return (mod(a-b, b));}fun threeOrFivesBelow(n){if (n <= 0) return 0;if (mod(n-1, 3)) return n-1 + threeOrFivesBelow(n-1);if (mod(n-1, 5)) return n-1 + threeOrFivesBelow(n-1);return threeOrFivesBelow(n-1);}print threeOrFivesBelow(10);";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("23", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
 
     private static final class ParseOutcome 
     {
