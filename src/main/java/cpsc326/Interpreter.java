@@ -198,7 +198,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         for (Expr expression: argument_expressions)
         {
             arguments.add(evaluate(expression));
-        }
+            if ( arguments.size() > function.arity())
+                throw new RuntimeError(identifier, "Invalid number of parameters");
+        }            
 
         return function.call(this, arguments);
 
@@ -340,8 +342,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
         List<Token> params = stmt.params;
         List<Stmt> statements = stmt.body;
 
-        System.out.println("Adding function: " + stmt.name.lexeme);
-
         environment.define(stmt.name.lexeme, new OurPLFunction(stmt) 
         {
             @Override
@@ -350,7 +350,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
             @Override
             public Object call(Interpreter interpreter, List<Object> arguments)
             {
-                System.out.println("EXECUTING FUNCTION");
                 Environment previous = interpreter.environment;
                 try 
                 {
