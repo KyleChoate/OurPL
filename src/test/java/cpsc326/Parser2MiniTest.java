@@ -522,6 +522,18 @@ class Parser2MiniTest {
         assertEquals("5", out.stdout);
     }
 
+    @Test
+    void functionHelloWorld() 
+    {
+        String source = 
+        "fun helloWorld() { print \"Hello World\"; } " +
+        "helloWorld();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("Hello World", out.stdout);
+    }
+
 
     @Test
     void recursiveFunctionThroughVariable() 
@@ -539,6 +551,20 @@ class Parser2MiniTest {
         assertEquals("120", out.stdout);
     }
 
+    @Test
+    void parseStringUsedToCallFunctionReturnsError() 
+    {
+        String source = 
+        "fun test() { " +
+        "  print 1; " +
+        "} " +
+        "print \"test\"();";
+
+        ParseOutcome out = parseWithCapturedErr(source);
+        assertTrue(OurPL.hadError);
+        assertFalse(out.stderr.isBlank());
+
+    }
 
     private static final class ParseOutcome 
     {

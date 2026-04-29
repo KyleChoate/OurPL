@@ -22,9 +22,8 @@ public class DebugTool
     void rawRecursiveTest()
     {
         String source = 
-        "fun identity(f) { return f; } " +
-        "fun add(a, b) { return a + b; } " +
-        "print identity(add)(2, 3);";
+        "fun helloWorld() { print \"Hello World\"; } " +
+        "helloWorld();";
         new Interpreter().interpret(parse(source));
     }
 }

@@ -22,8 +22,6 @@ class OurPLFunction implements OurPLCallable
             // without having access to other environments
             interpreter.environment = new Environment(interpreter.globals);
 
-            // System.out.println("Calling function: " + declaration.name.lexeme);
-
             // If invalid match-up, throw error
             if (arguments.size() != arity())
                 throw new RuntimeError(declaration.params.get(0),"Invalid number of arguments, expected " + arity());

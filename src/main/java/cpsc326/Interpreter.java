@@ -38,6 +38,9 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 
     private void execute(Stmt stmt) 
     {
+        if (stmt == null)
+            throw new RuntimeException ("Executed invalid statement");
+
         stmt.accept(this);
     }
 
@@ -138,8 +141,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     public Object visitLogicalExpr(Expr.Logical expr) {
         Object left = evaluate(expr.left);
 
-        // System.out.println(expr.operator.type);
-
         if (expr.operator.type == TokenType.OR) 
         {
             if (isTruthy(left)) return left;
@@ -190,12 +191,18 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     @Override
     public Object visitCallExpr(Expr.Call expr) 
     {
+
+        // if 
+
+        // evaluate(expr.callee) will return callee's corresponding
+        // value in hashmaps since calleee will be a Expr.Variable
         Object callee = evaluate(expr.callee);
 
+        // Error if not callable
         if (!(callee instanceof OurPLCallable)) 
-            throw new RuntimeError(expr.paren, "Invalid");
-        
+            throw new RuntimeError(expr.paren, "Expecting a function");
 
+        // Cast to a callable type
         OurPLCallable function = (OurPLCallable) callee;
 
         List<Object> arguments = new ArrayList<>();
@@ -206,7 +213,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
 
         if (arguments.size() != function.arity()) 
             throw new RuntimeError(expr.paren, "Invalid number of parameters");
-        
 
         return function.call(this, arguments);
     }
@@ -342,7 +348,6 @@ class Interpreter implements Expr.Visitor<Object>, Stmt.Visitor<Void>
     {
         // Goal:    Add function to environment's hashmap
         globals.define(stmt.name.lexeme, new OurPLFunction(stmt));
-        // System.out.println("Defined a function: " + stmt.name.lexeme);
         return null;
     }
 

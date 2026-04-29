@@ -25,7 +25,7 @@ class Parser {
     {
         List<Stmt> statements = new ArrayList<>();
 
-        while(!isAtEnd()) 
+        while(!isAtEnd())
             statements.add(declaration());
         
         return statements;
@@ -36,6 +36,7 @@ class Parser {
     {
         try 
         {
+            System.out.println("AT START OF DECL: " + peek());
             if (match(VAR)) 
                 return varDeclaration();
             
@@ -106,7 +107,7 @@ class Parser {
         else
         {
             value = expression();
-            consume(SEMICOLON, "Expected ';' after value");
+            consume(SEMICOLON, "Expected ';' after return value");
         }
 
         return new Stmt.Return(value);
@@ -358,10 +359,8 @@ class Parser {
         // Otherwise, add an argument and do-while until no more commas
         do
         {
-            // System.out.println("Iterating loop");
             Token tmp = consume(IDENTIFIER, "Expected identifier");
             parameters.add(tmp);
-            // System.out.println("Adding identifier: " + tmp.lexeme + " next one is: " + peek().lexeme);
             if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
             {
                 error(previous(), "Argument size is too large for call");
