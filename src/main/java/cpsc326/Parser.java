@@ -36,7 +36,6 @@ class Parser {
     {
         try 
         {
-            System.out.println("AT START OF DECL: " + peek());
             if (match(VAR)) 
                 return varDeclaration();
             
