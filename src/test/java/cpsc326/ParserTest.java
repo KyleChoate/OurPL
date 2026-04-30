@@ -19,8 +19,7 @@
 // import org.junit.jupiter.params.provider.Arguments;
 // import org.junit.jupiter.params.provider.MethodSource;
 
-// class ParserTest 
-// {
+// class ParserTest {
 
 //     @BeforeEach
 //     void resetFlags() {
@@ -57,8 +56,7 @@
 //         }
 //     }
 
-//     private EvalOutcome interpret(String source) 
-//     {
+//     private EvalOutcome interpret(String source) {
 //         PrintStream originalOut = System.out;
 //         PrintStream originalErr = System.err;
 //         ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -170,8 +168,7 @@
 //     }
 
 //     @Test
-//     void reportsMissingRightParen() 
-//     {
+//     void reportsMissingRightParen() {
 //         ParseOutcome out = parseWithCapturedErr("(1 + 2");
 //         assertNull(out.expr);
 //         assertTrue(OurPL.hadError);
@@ -264,11 +261,8 @@
 //     }
 
 //     @Test
-//     void evaluatesBooleanEqualityOutput() 
-//     {
+//     void evaluatesBooleanEqualityOutput() {
 //         EvalOutcome out = interpret("true == false");
-//         System.out.println(out.getStdout());
-//         System.out.println(out.getStderr());
 //         assertFalse(OurPL.hadRuntimeError);
 //         assertEquals("false", out.stdout);
 //         assertTrue(out.stderr.isEmpty());
@@ -329,26 +323,13 @@
 //         }
 //     }
 
-//     private static final class EvalOutcome 
-//     {
+//     private static final class EvalOutcome {
 //         final String stdout;
 //         final String stderr;
 
-//         EvalOutcome(String stdout, String stderr) 
-//         {
+//         EvalOutcome(String stdout, String stderr) {
 //             this.stdout = stdout;
 //             this.stderr = stderr;
 //         }
-
-//         String getStdout()
-//         {
-//             return this.stdout;
-//         }
-
-//         String getStderr()
-//         {
-//             return this.stderr;
-//         }
-
 //     }
 // }

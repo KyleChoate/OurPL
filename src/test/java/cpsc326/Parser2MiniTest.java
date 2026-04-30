@@ -13,20 +13,21 @@ import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class ParserTest2 
-{
+class Parser2MiniTest {
+
     @BeforeEach
-    void resetFlags() 
-    {
+    void resetFlags() {
         OurPL.hadError = false;
         OurPL.hadRuntimeError = false;
     }
 
-    private List<Token> lex(String source) {
+    private List<Token> lex(String source) 
+    {
         return new Lexer(source).scanTokens();
     }
 
-    private List<Stmt> parse(String source) {
+    private List<Stmt> parse(String source) 
+    {
         OurPL.hadError = false;
         return new Parser(lex(source)).parse();
     }
@@ -75,10 +76,9 @@ class ParserTest2
         }
     }
 
-
-
     @Test
-    void parsesVariableDeclarationWithInitializer() {
+    void parsesVariableDeclarationWithInitializer() 
+    {
         Stmt stmt = parseSingleStatement("var answer = 42;");
         assertTrue(stmt instanceof Stmt.Var);
 
@@ -89,7 +89,8 @@ class ParserTest2
     }
 
     @Test
-    void parsesAssignmentExpression() {
+    void parsesAssignmentExpression() 
+    {
         Stmt stmt = parseSingleStatement("value = 3;");
         assertTrue(stmt instanceof Stmt.Expression);
 
@@ -214,7 +215,8 @@ class ParserTest2
     }
 
     @Test
-    void parsesForLoopWithoutClausesAsInfiniteLoop() {
+    void parsesForLoopWithoutClausesAsInfiniteLoop() 
+    {
         Stmt stmt = parseSingleStatement("for (;; ) print 1;");
         assertTrue(stmt instanceof Stmt.While);
 
@@ -237,7 +239,8 @@ class ParserTest2
     }
 
     @Test
-    void reportsMissingLeftParenAfterIf() {
+    void reportsMissingLeftParenAfterIf() 
+    {
         ParseOutcome out = parseWithCapturedErr("if true) print 1;");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -245,7 +248,8 @@ class ParserTest2
     }
 
     @Test
-    void reportsMissingSemicolonInsideForHeader() {
+    void reportsMissingSemicolonInsideForHeader() 
+    {
         ParseOutcome out = parseWithCapturedErr("for (var i = 0 i < 2; i = i + 1) print i;");
         assertTrue(OurPL.hadError);
         assertFalse(out.stderr.isBlank());
@@ -253,7 +257,8 @@ class ParserTest2
     }
 
     @Test
-    void parserRecoversAfterBrokenDeclaration() {
+    void parserRecoversAfterBrokenDeclaration() 
+    {
         ParseOutcome out = parseWithCapturedErr("var x = ; print 2;");
         assertTrue(OurPL.hadError);
         assertEquals(2, out.statements.size());
@@ -262,7 +267,8 @@ class ParserTest2
     }
 
     @Test
-    void interpretsVariableAssignment() {
+    void interpretsVariableAssignment() 
+    {
         EvalOutcome out = interpret("var value = 1; value = value + 2; print value;");
         assertFalse(OurPL.hadError);
         assertFalse(OurPL.hadRuntimeError);
@@ -270,16 +276,8 @@ class ParserTest2
     }
 
     @Test
-    void rawLoopTest()
+    void interpretsForLoop() 
     {
-        String source = "var i = 0; for (; i < 2; ) { print i; i = i + 1; }";
-        new Interpreter().interpret(parse(source));
-        assertFalse(OurPL.hadRuntimeError);
-    }
-
-
-    @Test
-    void interpretsForLoop() {
         EvalOutcome out = interpret("for (var i = 0; i < 3; i = i + 1) print i;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("0\n1\n2", out.stdout);
@@ -303,29 +301,290 @@ class ParserTest2
     }
 
     @Test
-    void logicalAndShortCircuitsDuringInterpretation() {
+    void logicalAndShortCircuitsDuringInterpretation() 
+    {
         EvalOutcome out = interpret("var a = false; if (a and missing) print 1; else print 2;");
-        // EvalOutcome out = interpret("var a = false; if (a and missing) print 1; else print 2;");
         assertFalse(OurPL.hadRuntimeError);
         assertEquals("2", out.stdout);
         assertTrue(out.stderr.isEmpty());
     }
 
-    private static final class ParseOutcome {
+    @Test
+    void declareFunction() 
+    {
+        String source = 
+        "fun test() {for (var i = 0; i < 10 ; i = i + 1) {print i;} } test();";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("0\n1\n2\n3\n4\n5\n6\n7\n8\n9", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
+
+    @Test
+    void returnValueFromFunction1() 
+    {
+        String source = "fun test() {return 1;} var a = test(); print a;";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("1", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
+
+    @Test
+    void returnValueFromFunction2() 
+    {
+        String source = "fun test(){var a = 100;var b = 10;return a / b;} var a = test() / 2; print a + 2;";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("7", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    } // 
+
+    @Test
+    void functionUsesParameters() 
+    {
+        String source = "fun test(b) {return b * 2;} var a = test(1); print a;";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("2", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    } // String source = "fun test(b) {return b * 2;} var a = test();";
+
+    @Test
+    void threeOrFivesBelow()
+    {
+        String source = "fun mod(a, b){if (a < 0) return false;if (a == 0) return true;return (mod(a-b, b));}fun threeOrFivesBelow(n){if (n <= 0) return 0;if (mod(n-1, 3)) return n-1 + threeOrFivesBelow(n-1);if (mod(n-1, 5)) return n-1 + threeOrFivesBelow(n-1);return threeOrFivesBelow(n-1);}print threeOrFivesBelow(10);";
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("23", out.stdout);
+        assertTrue(out.stderr.isEmpty());
+    }
+
+    @Test
+    void invalidNumberOfParameters()
+    {
+        String source = "fun test(a, b){return a * b;}print test(1);";
+        EvalOutcome out = interpret(source);
+        assertTrue(OurPL.hadRuntimeError);
+        assertFalse(out.stderr.isBlank());
+    }
+
+    @Test
+    void functionReferenceIsValue() 
+    {
+        String source = 
+        "fun test() { return 1; } " +
+        "var a = test; " +
+        "print a();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("1", out.stdout);
+    }
+
+
+    @Test
+    void assignFunctionToAnotherVariable() 
+    {
+        String source = 
+        "fun test() { return 42; } " +
+        "var f = test; " +
+        "var g = f; " +
+        "print g();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("42", out.stdout);
+    }
+
+
+    @Test
+    void passFunctionAsArgument() 
+    {
+        String source = 
+        "fun apply(f, x) { return f(x); } " +
+        "fun double(n) { return n * 2; } " +
+        "print apply(double, 5);";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("10", out.stdout);
+    }
+
+
+    @Test
+    void returnFunctionFromFunction() 
+    {
+        String source = 
+        "fun makeFunc() { " +
+        "  fun inner() { return 99; } " +
+        "  return inner; " +
+        "} " +
+        "var f = makeFunc(); " +
+        "print f();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("99", out.stdout);
+    }
+
+    @Test
+    void higherOrderFunction() 
+    {
+        String source = 
+        "fun identity(f) { return f; } " +
+        "fun add(a, b) { return a + b; } " +
+        "print identity(add)(2, 3);";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("5", out.stdout);
+    }
+
+
+    @Test
+    void functionWithoutReturnReturnsNil() 
+    {
+        String source = 
+        "fun test() { var a = 1; } " +
+        "print test();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("nil", out.stdout);
+    }
+
+    @Test
+    void callingNonFunctionCausesRuntimeError() 
+    {
+        String source = 
+        "var a = 10; " +
+        "a();";
+        
+        EvalOutcome out = interpret(source);
+        assertTrue(OurPL.hadRuntimeError);
+        assertFalse(out.stderr.isBlank());
+    }
+
+    @Test
+    void functionReassignment() 
+    {
+        String source = 
+        "fun f() { return 1; } " +
+        "fun g() { return 2; } " +
+        "var x = f; " +
+        "print x(); " +
+        "x = g; " +
+        "print x();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("1\n2", out.stdout);
+    }
+
+    @Test
+    void nestedFunctionCalls() 
+    {
+        String source = 
+        "fun add(a, b) { return a + b; } " +
+        "fun twice(f, x, y) { return f(x, y) * 2; } " +
+        "print twice(add, 2, 3);";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("10", out.stdout);
+    }
+
+    
+    @Test
+    void identityReturnSumExample() 
+    {
+        String source = 
+        "fun identity(a) { return a; } " +
+        "fun returnSum(a, b) { return a + b; } " +
+        "print identity(returnSum)(1,2);";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("3", out.stdout);
+    }
+
+    @Test
+    void functionShadowedByVariable() 
+    {
+        String source = 
+        "fun test() { return 1; } " +
+        "var test = 5; " +
+        "print test;";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("5", out.stdout);
+    }
+
+    @Test
+    void functionHelloWorld() 
+    {
+        String source = 
+        "fun helloWorld() { print \"Hello World\"; } " +
+        "helloWorld();";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("Hello World", out.stdout);
+    }
+
+
+    @Test
+    void recursiveFunctionThroughVariable() 
+    {
+        String source = 
+        "fun fact(n) { " +
+        "  if (n <= 1) return 1; " +
+        "  return n * fact(n-1); " +
+        "} " +
+        "var f = fact; " +
+        "print f(5);";
+        
+        EvalOutcome out = interpret(source);
+        assertFalse(OurPL.hadRuntimeError);
+        assertEquals("120", out.stdout);
+    }
+
+    @Test
+    void parseStringUsedToCallFunctionReturnsError() 
+    {
+        String source = 
+        "fun test() { " +
+        "  print 1; " +
+        "} " +
+        "print \"test\"();";
+
+        ParseOutcome out = parseWithCapturedErr(source);
+        assertTrue(OurPL.hadError);
+        assertFalse(out.stderr.isBlank());
+
+    }
+
+    private static final class ParseOutcome 
+    {
         final List<Stmt> statements;
         final String stderr;
 
-        ParseOutcome(List<Stmt> statements, String stderr) {
+        ParseOutcome(List<Stmt> statements, String stderr) 
+        {
             this.statements = statements;
             this.stderr = stderr;
         }
     }
 
-    private static final class EvalOutcome {
+    private static final class EvalOutcome 
+    {
         final String stdout;
         final String stderr;
 
-        EvalOutcome(String stdout, String stderr) {
+        EvalOutcome(String stdout, String stderr) 
+        {
             this.stdout = stdout;
             this.stderr = stderr;
         }

@@ -1,14 +1,20 @@
 package cpsc326;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
 import static cpsc326.TokenType.*;
 
 class Parser {
-    private static class ParseError extends RuntimeException{ }
+    private static class ParseError extends RuntimeException
+    { 
+
+    }
 
     private final List<Token> tokens;
     private int current = 0;
+    private static final int MAX_ARG_SIZE = 255;
+
 
     Parser(List<Token> tokens) 
     {
@@ -17,437 +23,406 @@ class Parser {
 
     List<Stmt> parse() 
     {
+        List<Stmt> statements = new ArrayList<>();
+
+        while(!isAtEnd())
+            statements.add(declaration());
+        
+        return statements;
+       
+    }
+
+    private Stmt declaration() 
+    {
         try 
         {
-            return program();
-            // return expression();
-        } 
-        catch (ParseError error) 
-        {
-            return null;
-        }
-    }
+            if (match(VAR)) 
+                return varDeclaration();
+            
+            if (match(FUN))
+                return function();
 
-    private List<Stmt> program()
-    {
-        // Initialize list of declarations
-        List<Stmt> declarations = new ArrayList<>();
-        // Add each declaration to list until hit EOF
-        while (!isAtEnd())
-        {
-            Stmt declaration = declaration();
-            declarations.add(declaration);
+            return statement();
         }
-        return declarations;
-    }
-
-    private Stmt declaration()
-    {
-        try
-        {
-            if (match(VAR))
-                return varDecl();
-            else
-                return statement();
-        }
-        catch (ParseError error)
+        catch(ParseError error) 
         {
             synchronize();
             return null;
         }
     }
 
-    private Stmt varDecl()
+    private Stmt.Function function()
     {
-        // Consume Var not needed since match Var in declaration()
-        // Consume IDENTIFIER
-        Token name = consume(IDENTIFIER, "Expected variable name");
-        // Consume '=' and expression (optional)
+        Token name = consume(IDENTIFIER, "Expected function identifier");
+
+        consume(LEFT_PAREN, "Expected '(' after function identifier");
+
+        List<Token> parameters = parameters();
+        consume(LEFT_BRACE, "Expected '{' after function declaration");
+        List<Stmt> body = block();
+
+        return new Stmt.Function(name, parameters, body);
+    }
+
+    private Stmt varDeclaration() 
+    {
+        Token name = consume(IDENTIFIER, "Expected variable name after declaration.");
         Expr initializer = null;
-        if (match(EQUAL))
+        if (match(EQUAL)) 
             initializer = expression();
-        // Consume semi colon
-        consume(SEMICOLON, "Expected ';' after variable declaration");
-        // Return result
+
+        consume(SEMICOLON, "Expected ';' after variable declaration.");
         return new Stmt.Var(name, initializer);
     }
 
-    private Stmt statement()
+    private Stmt statement() 
     {
-        // Peek for printStmt, exprStmt, block, ifStmt, whileStmt, or forStmt
-        switch(peek().type)
-        {
-            case PRINT: 
-                return printStmt(); 
-            case LEFT_BRACE:
-                return block();
-            case IF:
-                return ifStmt();
-            case WHILE:
-                return whileStmt();
-            case FOR:
-                return forStmt();
-            default:
-                return exprStmt();
-        }
+        if(match(PRINT)) 
+            return printStatement();
+        
+        if(match(LEFT_BRACE)) 
+            return new Stmt.Block(block());
+        
+        if(match(IF)) 
+            return ifStatement();
+        
+        if(match(WHILE)) 
+            return whileStatement();
+        
+        if(match(FOR)) 
+            return forStatement();
+
+        if(match(RETURN)) 
+            return returnStatement();
+
+        return expressionStatement();
     }
 
-    
-    private Stmt ifStmt()
+    private Stmt returnStatement() 
     {
-        // Initialize variables
-        Expr condition;
-        Stmt thenBranch;
-        Stmt elseBranch;
-        // Consume if
-        consume(IF, "Expected 'if'");
-        // Consume left parenthesis
-        consume(LEFT_PAREN, "Expected '('");
-        // Consume expression
-        condition = expression();
-        consume(RIGHT_PAREN, "Expected ')'");
-        // Consume thenBranch
-        thenBranch = statement();
-        // Consume else and elseStatement (optional)
-        if (match(ELSE))
+        Expr value;
+        if (match(SEMICOLON))
+            value = new Expr.Literal(null);
+        else
+        {
+            value = expression();
+            consume(SEMICOLON, "Expected ';' after return value");
+        }
+
+        return new Stmt.Return(value);
+    }
+
+    private Stmt printStatement() 
+    {
+        Expr value = expression();
+        consume(SEMICOLON, "Expected ';' after value");
+        return new Stmt.Print(value);
+    }
+
+    private List<Stmt> block() 
+    {
+        List<Stmt> statements = new ArrayList<>();
+        while (!check(RIGHT_BRACE) && !isAtEnd()) 
+            statements.add(declaration());
+        
+        consume(RIGHT_BRACE, "Expect '}' after block;");
+        return statements;
+    }
+
+    private Stmt ifStatement() 
+    {
+        consume (LEFT_PAREN, "Expected '(' after if");
+        Expr condition = expression();
+        consume (RIGHT_PAREN, "Expected '(' after if condition.");
+        Stmt thenBranch = statement();
+        Stmt elseBranch = null;
+        if (match(ELSE)) 
             elseBranch = statement();
-        else 
-            elseBranch = null;
-        // Return result
+        
         return new Stmt.If(condition, thenBranch, elseBranch);
-
     }
 
-private Stmt forStmt()
-{
-    consume(FOR, "Expected 'for'");
-    consume(LEFT_PAREN, "Expected '('");
-
-    // Consume initializer, which will be none, varDecl, or exprStmt
-    Stmt initializer = null;
-    if (!check(SEMICOLON))
+    private Stmt whileStatement() 
     {
-        if (match(VAR))
-            initializer = varDecl(); // Will consume semicolon
-        else
-            initializer = exprStmt(); // Will consume semicolon
+        consume(LEFT_PAREN, "Expect '(' after while.");
+        Expr condition = expression();
+        consume(RIGHT_PAREN, "Expect ')' after while condition.");
+        Stmt body = statement();
+
+        return new Stmt.While(condition, body);
     }
-    else
-        consume(SEMICOLON, "Missing ';'");
 
-    // Consume condition
-    Expr condition = null;
-    if (!check(SEMICOLON))
-        condition = expression();
-    consume(SEMICOLON, "Missing ';'");
-
-    // Consume incrementer (optional)
-    Expr incrementer = null;
-    if (!check(RIGHT_PAREN))
-        incrementer = expression();
-    consume(RIGHT_PAREN, "Expected ')'");
-    Stmt incrementerStmt = new Stmt.Expression(incrementer);
-
-    // Consume body
-    Stmt statement = statement();    
-    if (incrementer != null)
+    private Stmt forStatement() 
     {
-        if (statement instanceof Stmt.Block)
+        consume(LEFT_PAREN, "Expect '(' after for.");
+        Stmt initializer;
+        if (match(SEMICOLON)) 
+            initializer = null;
+        
+        else if (match(VAR)) 
+            initializer = varDeclaration();
+        else 
+            initializer = expressionStatement();
+
+        Expr condition = null;
+        if(!(check(SEMICOLON))) 
+            condition = expression();
+        
+        consume(SEMICOLON, "Expected ';' after loop condition");
+
+        Expr increment = null;
+        if(!check(RIGHT_PAREN)) 
+            increment = expression();
+        
+        consume(RIGHT_PAREN, "Expect ')' after clauses");
+        Stmt body = statement();
+
+        if (increment != null) 
         {
-            List<Stmt> tmp = ((Stmt.Block)statement).statements;
-            tmp.add(incrementerStmt);
+            body = new Stmt.Block(
+                Arrays.asList(body, new Stmt.Expression(increment))
+            );
         }
-        else
-        {
-            List<Stmt> tmp = new ArrayList<>();
-            tmp.add(statement);
-            tmp.add(incrementerStmt);
-            statement = new Stmt.Block(tmp);
-        }
+
+        if (condition == null) 
+            condition = new Expr.Literal(true);
+        
+        body = new Stmt.While(condition, body);
+
+        if(initializer != null) 
+            body = new Stmt.Block(Arrays.asList(initializer, body));
+
+        return body;
     }
 
-    // Default condition
-    if (condition == null)
-        condition = new Expr.Literal(new Token(TRUE, "true", null, 0));
-
-    Stmt while_loop = new Stmt.While(condition, statement);
-
-    if (initializer != null)
+    private Stmt expressionStatement() 
     {
-        List<Stmt> tmp = new ArrayList<>();
-        tmp.add(initializer);
-        tmp.add(while_loop);
-        return new Stmt.Block(tmp);
-    }
-    else
-        return while_loop;
-}
-
-    private Stmt whileStmt()
-    {
-        Expr condition;
-        Stmt statement;
-        // consume while
-        consume(WHILE, "Expected 'while'");
-        // Consume left paren
-        consume(LEFT_PAREN, "Expected '('");
-        // Consume expression
-        condition = expression();
-        // Consume right paren
-        consume(RIGHT_PAREN, "Expected ')'");
-        // consume statement
-        statement = statement();
-        // Return result
-        return new Stmt.While(condition, statement);
-    }
-
-    private Stmt block()
-    {
-        List<Stmt> declarations = new ArrayList<>();
-        // Consume left paren
-        consume(LEFT_BRACE, "Expected '{'");
-        // Create list of declarations until you hit a right paren
-        while (!match(RIGHT_BRACE))
-        {
-            Stmt declaration = declaration();
-            declarations.add(declaration);
-        }
-        // Return result
-        return new Stmt.Block(declarations);
-    }
-
-    private Stmt exprStmt()
-    {
-        // Consume expression
         Expr expr = expression();
-        // consume semi colon
-        consume(SEMICOLON, "Expected ';' after expression statement");
-        // Return result
+        consume(SEMICOLON, "Expected ';' after expression.");
         return new Stmt.Expression(expr);
     }
 
-    private Stmt printStmt()
-    {
-        Expr expression;
-        // consume print
-        consume(PRINT, "Expected 'print'");
-        // Consume expression
-        expression = expression();
-        // Consume semicolon
-        consume(SEMICOLON, "Expected ';'");
-        // Return result
-        return new Stmt.Print(expression);
-    }
-
-    private Expr expression() 
-    {
+    private Expr expression() {
         return assignment();
     }
 
-    private Expr assignment()
-    {
-        // Consume (IDENTIFIER <assignment>) or <logic_or>
-        // The grammar I was provided is not LL(1) 
-        if ((tokens.get(current).type == IDENTIFIER) && (tokens.get(current + 1).type == EQUAL))
-        {            
-            // error(peek(), "Activated assignemtn match");
-            Token identifier = advance();
-            advance();
-            // if (match(EQUAL))
-                return new Expr.Assign(identifier, assignment());
+    private Expr assignment() {
+        Expr expr = or();
 
+        if (match(EQUAL)) {
+            Token equals = previous();
+            Expr value = assignment();
+
+            if (expr instanceof Expr.Variable) {
+                Token name = ((Expr.Variable)expr).name;
+                return new Expr.Assign(name,value);
+            }
             
-
-            // else
-            //     return logic_or();
-        } 
-        else
-            return logic_or();
+            error(equals, "Invalid Assignment target.");
+        }
+        return expr;
     }
 
+    private Expr or() {
+        Expr expr = and();
 
-    private Expr logic_or()
-    {
+        while (match(OR)) {
+            Token operator = previous();
+            Expr right = and();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr and() {
+        Expr expr = equality();
+
+        while (match(AND)) {
+            Token operator = previous();
+            Expr right = equality();
+            expr = new Expr.Logical(expr, operator, right);
+        }
+        return expr;
+    }
+
+    private Expr equality() {
+        Expr expr = comparison();
+        while(match(BANG_EQUAL, EQUAL_EQUAL)) {
+            Token operator = previous();
+            Expr right = comparison();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr comparison() {
+        Expr expr = term();
+        while(match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)) {
+            Token operator = previous();
+            Expr right = term();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr term() {
+        Expr expr = factor();
+
+        while (match(MINUS, PLUS)) {
+            Token operator = previous();
+            Expr right = factor();
+            expr = new Expr.Binary(expr, operator, right);
+        }
+
+        return expr;
+    }
+
+    private Expr factor() {
+        Expr expr = unary();
         
-        Expr left;
-        Token operator;
-        Expr right;
-        // Consume <logic_and>
-        left = logic_and();
-        // Consume (or <logic_and>) optionally infinitely many times
-        while (match(OR))
-        {
-            operator = previous();
-            right = logic_and();
-            left = new Expr.Logical(left, operator, right);
+        while (match(SLASH, STAR)) {
+            Token operator = previous();
+            Expr right = unary();
+            expr = new Expr.Binary(expr, operator, right);
         }
-        // Return result
-        return left;
+
+        return expr;
     }
 
-    private Expr logic_and()
-    {
-        Expr left;
-        Token operator;
-        Expr right;
-        // Consume <equality>
-        left = equality();
-        // Consume (and <equality>) optionally infinitely many times
-        while (match(AND))
-        {
-            operator = previous();
-            right = equality();
-            left = new Expr.Logical(left, operator, right);
-        }
-        // Return result
-        return left;
-    }
-
-    // I discovered issues with my initial recursive method and I couldn't
-    // find a satisfying issue. Needless to say, I learned a lot from it
-    // Bummer I couldn't find a recursive method
-    private Expr equality() // (BANG_EQUAL, EQUAL_EQUAL)
-    {
-        Expr left;
-        Token operator;
-        Expr right;
-
-        left = comparison();
-
-        while (match(BANG_EQUAL, EQUAL_EQUAL))
-        {
-            operator = previous();
-            right = comparison();
-            left = new Expr.Binary(left, operator, right);
-        } 
-        return left;
-    }
-
-    private Expr comparison()  // (GREATER, GREATER_EQUAL, LESS, LESS_EQUAL)
-    {
-        Expr left;
-        Token operator;
-        Expr right;
-
-        left = term();
-
-        while (match(GREATER, GREATER_EQUAL, LESS, LESS_EQUAL))
-        {
-            operator = previous();
-            right = term();
-            left = new Expr.Binary(left, operator, right);
-        } 
-        return left;
-    }
-
-    private Expr term() 
-    {
-        Expr left;
-        Token operator;
-        Expr right;
-
-        left = factor();
-
-        while (match(PLUS, MINUS))
-        {
-            operator = previous();
-            right = factor();
-            left = new Expr.Binary(left, operator, right);
-        } 
-        return left;
-    }
-
-    private Expr factor() 
-    {
-        Expr left;
-        Token operator;
-        Expr right;
-
-        left = unary();
-
-        while (match(SLASH, STAR))
-        {
-            operator = previous();
-            right = unary();
-            left = new Expr.Binary(left, operator, right);
-        } 
-        return left;
-    }
-
-    private Expr unary() 
-    {
-        Token operator;
-        Expr right;
-
-        if (match(MINUS,BANG))
-        {
-            operator = previous();
-            right = unary();
+    private Expr unary() {
+        if (match(BANG, MINUS)) {
+            Token operator = previous();
+            Expr right = unary();
             return new Expr.Unary(operator, right);
         }
-            
-        return primary();
+
+        return call();
     }
 
-    private Expr primary() 
+    private Expr call() 
     {
-        if (match(NUMBER, STRING, TRUE, FALSE, NIL))
-            return new Expr.Literal(previous());  
-        
-        if (match(LEFT_PAREN))
+        Expr expr = primary();
+
+        if (previous().type == IDENTIFIER)
+            while (match(LEFT_PAREN))
+            {
+                expr = finishCall(expr);
+            }
+
+        return expr;
+    }
+
+    private Expr finishCall(Expr callee)
+    {
+        List<Expr> arguments = arguments();
+        return new Expr.Call(callee, previous(), arguments);
+    }
+
+    private List<Expr> arguments()
+    {
+        List<Expr> arguments = new ArrayList<>();
+
+        // If empty, return empty list
+        if (match(RIGHT_PAREN))
+            return arguments;
+
+        int arg_count = 0;
+
+        // Otherwise, add an argument and do-while until no more commas
+        do
         {
-            Expr group = new Expr.Grouping(expression());
-            consume(RIGHT_PAREN, "Expected )");
-            return group;
+            arguments.add(expression());
+            // If too large, throw error
+            if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
+                error(previous(), "Argument size is too large for call");
+
+        } while (match(COMMA));
+
+        consume(RIGHT_PAREN, "Expected ')' after function arguments"); 
+
+        return arguments;
+    }
+
+    private List<Token> parameters()
+    {
+        List<Token> parameters = new ArrayList<>();
+        int arg_count = 0;
+
+        // If empty, return empty list
+        if (match(RIGHT_PAREN))
+            return parameters;
+
+        // Otherwise, add an argument and do-while until no more commas
+        do
+        {
+            Token tmp = consume(IDENTIFIER, "Expected identifier");
+            parameters.add(tmp);
+            if (arg_count++ == MAX_ARG_SIZE) // Equal so that it does not repeat error
+            {
+                error(previous(), "Argument size is too large for call");
+                break;
+            }
+        } while (match(COMMA));
+
+        consume(RIGHT_PAREN, "Expected ')' after function parameters"); 
+
+        return parameters;
+    }
+
+    private Expr primary() {
+        if (match(FALSE)) return new Expr.Literal(false);
+        if (match(TRUE)) return new Expr.Literal(true);
+        if (match(NIL)) return new Expr.Literal(null);
+        
+        if (match(NUMBER, STRING)) {
+            return new Expr.Literal(previous().literal);
         }
 
-        if (match(IDENTIFIER))
-        {
+        if (match(IDENTIFIER)) {
             return new Expr.Variable(previous());
+        }
+
+        if(match(LEFT_PAREN)) {
+            Expr expr = expression();
+            consume(RIGHT_PAREN, "Expect ')' after expression.");
+            return new Expr.Grouping(expr);
         }
 
         throw error(peek(), "Expect expression.");
     }
 
-    private boolean match (TokenType... types) 
-    {
-        for (TokenType type : types) 
-        {
-            if (check(type)) 
-            {
+
+    /* ~~~~~~~~ HELPER FUNCITONS BELOW ~~~~~~~~~~ */
+
+    private boolean match (TokenType... types) {
+        for (TokenType type : types) {
+            if (check(type)) {
                 advance();
                 return true;
             }
         }
-
         return false;
     }
     
-
-    private Token consume(TokenType type, String message) 
-    {
-        if(check(type))
-            return advance();
+    private Token consume(TokenType type, String message) {
+        if(check(type)) return advance();
 
         throw error(peek(), message);
     }
 
-    private ParseError error(Token token, String message) 
-    {
-        OurPL.error(token.line, message);
+    private ParseError error(Token token, String message) {
+        OurPL.error(token, message);
         return new ParseError();
     }
 
-    private void synchronize() 
-    {
+    private void synchronize() {
         advance();
-
-        while(!isAtEnd()) 
-        {
-            if (previous().type == SEMICOLON) 
-                return;
-            switch(peek().type) 
-            {
+        while(!isAtEnd()) {
+            if (previous().type == SEMICOLON) return;
+            switch(peek().type) {
                 case STRUCT:
                 case FOR:
                 case FUN:
@@ -457,45 +432,32 @@ private Stmt forStmt()
                 case VAR:
                 case WHILE:
                     return;
+                default:
             }
             
             advance();
         }
     }
 
-
-    private boolean check(TokenType type) 
-    {
-        if (isAtEnd())
-            return false;
-
+    private boolean check(TokenType type) {
+        if (isAtEnd()) return type == EOF;
         return peek().type == type;
     }
 
-
-
-    private Token advance() 
-    {
-        if(!isAtEnd()) 
-            current++;
+    private Token advance() {
+        if(!isAtEnd()) current++;
         return previous();
     }
 
-
-    private boolean isAtEnd() 
-    {
+    private boolean isAtEnd() {
         return peek().type == EOF;
     }
 
-
-    private Token peek() 
-    {
+    private Token peek() {
         return tokens.get(current);
     }
 
-
-    private Token previous() 
-    {
+    private Token previous() {
         return tokens.get(current - 1);
     }
 }

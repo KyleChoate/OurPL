@@ -1,6 +1,7 @@
 package cpsc326;
 
-enum TokenType {
+enum TokenType 
+{
     LEFT_PAREN, 
     RIGHT_PAREN, 
     LEFT_BRACE, 
@@ -13,30 +14,30 @@ enum TokenType {
     SLASH, 
     SEMICOLON,
     EQUAL, 
-    EQUAL_EQUAL,
+    EQUAL_EQUAL, 
     BANG, 
-    BANG_EQUAL,
+    BANG_EQUAL, 
     GREATER, 
     GREATER_EQUAL,
     LESS, 
     LESS_EQUAL,
     IDENTIFIER, 
     STRING, 
-    NUMBER,
+    NUMBER, 
     AND, 
     ELSE, 
     FALSE, 
     FOR, 
-    FUN, 
     IF, 
     NIL, 
     OR, 
     PRINT, 
     RETURN, 
-    STRUCT, 
     THIS, 
+    STRUCT,
     TRUE, 
     VAR, 
-    WHILE,
-    EOF
+    WHILE, 
+    EOF, 
+    FUN
 }

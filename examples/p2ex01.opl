@@ -1,0 +1,6 @@
+var new_name = "Johnson";
+if (new_name == "Dr. Johnson") {
+    print "You called me something okay";
+} else {
+    print "I prefer doctor or professor";
+}
