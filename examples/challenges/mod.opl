@@ -1,0 +1,64 @@
+
+# Mod equation based on equation given by: 
+# https://www.geeksforgeeks.org/c/modulus-on-negative-numbers/
+fun mod(a, b)
+{
+    # r = Remainder
+    # a = divident
+    # b = divisor
+    return a - b * floor(a, b); # where r, a, b are Remainder, Dividend and Divisor respectively.
+}
+
+
+# floor (a / b)
+fun floor(a, b)
+{
+    var result = 0;
+
+    if (a >= b and a > 0)
+    {
+        if (b > 0)  # a = pos, b = pos
+            result = floor(a-b, b) + 1;
+        else        # a = pos, b = neg
+           result = floor(a+b, b) - 1;
+    }
+
+    if (a <= b and a < 0)
+    {
+        if (b > 0)  # a = neg, b = pos
+            result = floor(a+b, b) - 1;
+        else        # a = neg, b = neg
+            result = floor(a-b, b) + 1;
+    }
+
+    return result;
+
+}
+
+fun test_mod(a, b, expect)
+{
+    print "TESTING";
+    print "-------";
+    var result = mod(a, b);
+    print "Result is: ";
+    print result;
+    print "Expected:";
+    print expect;
+    return (result == expect);
+}
+
+
+
+# Calculated expected mod here:
+# https://www.calculatorsoup.com/calculators/math/modulo-calculator.php
+print test_mod(2, 2, 0);
+print "";
+
+print test_mod(-137, 5, 3);
+print "";
+
+print test_mod(-15, -2, -1);
+print "";
+
+print test_mod(89, -5, -1);
+print "";

@@ -1,0 +1,45 @@
+
+fun integer_power(base, exponent)
+{
+    if (exponent == 0)
+    {
+        return 1;
+    }
+
+    if (exponent > 0)
+    {
+        return base * integer_power(base, exponent - 1);
+    }
+
+    else
+    {
+        return (1 / base) * integer_power(base, exponent + 1);
+    }
+}
+
+
+fun test_integer_pow(base, exponent, expect)
+{
+    print "TESTING";
+    print "-------";
+    var result = integer_power(base, exponent);
+    print "Result is: ";
+    print result;
+    print "Expected:";
+    print expect;
+    return (result == expect);
+}
+
+
+print test_integer_pow(2, 2, 4);
+print "";
+
+print test_integer_pow(5, 3, 125);
+print "";
+
+print test_integer_pow(2, -2, 0.25);
+print "";
+
+print test_integer_pow(4, -3, 0.015625);
+print "";
+
